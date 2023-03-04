@@ -22,9 +22,6 @@ Then:
     $ mkdir LEAfiles LEDfiles
 
 compile:
- - Aluno.c
- - Disc.c
- - ListEnc.c
 
     $ gcc -o Aluno.o src/Aluno.c -c
 

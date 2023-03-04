@@ -4,127 +4,25 @@
 
 #include "./include/ListEnc.h"
 
+typedef enum {
+    NOME, NUMERO, CPF_PROF 
+} SEARCH_MODE;
+
 // funções para cadastrar, remover e procurar alunos e matérias
 void cadastrarAluno(LEA **endHead);
 void cadastrarMateria(LED **endHead);
 void cadastrarAlunoEmMateria(LEA **alunoHead, LED **discHead);
-void removerAluno();
-void removerMateria();
+void removerAluno(LEA **alunoHead, LED **discHead);
+void removerMateria(LED **discHead, LEA **alunoHead);
 void removerAlunoDeMateria(LED **endHead);
-void procurarPorAluno();
-void procurarPorMateria();
+void procurarPorAluno(LEA **endHead, int searchMode);
+void procurarPorMateria(int searchMode, LED **endHead);
 
-int main() {
-    // int opcao;
-
-    // printf("### SISMAT\n\n");
-
-    // do {
-    //     printf("Escolha uma das opcoes abaixo:\n");
-    //     printf("1. Cadastrar\n");
-    //     printf("2. Remover\n");
-    //     printf("3. Procurar\n");
-    //     printf("4. Sair\n");
-    //     printf("Opcao: ");
-    //     scanf("%d", &opcao);
-
-    //     switch (opcao) {
-    //         case 1:
-    //             printf("Escolha uma das opcoes abaixo:\n");
-    //             printf("1. Cadastrar Aluno no SisMat\n");
-    //             printf("2. Cadastrar Materia no SisMat\n");
-    //             printf("3. Cadastrar Aluno em Materia\n");
-    //             printf("4. Cadastrar Materia em Aluno\n");
-    //             printf("Opcao: ");
-    //             scanf("%d", &opcao);
-    //             switch (opcao) {
-    //                 case 1:
-    //                     cadastrarAluno();
-    //                     break;
-    //                 case 2:
-    //                     cadastrarMateria();
-    //                     break;
-    //                 case 3:
-    //                     cadastrarAlunoEmMateria();
-    //                     break;
-    //                 case 4:
-    //                     cadastrarMateriaEmAluno();
-    //                     break;
-    //                 default:
-    //                     printf("Opcao invalida\n");
-    //                     break;
-    //             }
-    //             break;
-    //         case 2:
-    //             printf("Escolha uma das opcoes abaixo:\n");
-    //             printf("1. Remover Aluno do SisMat\n");
-    //             printf("2. Remover Materia do SisMat\n");
-    //             printf("3. Remover Aluno de Materia\n");
-    //             printf("4. Remover Materia de Aluno\n");
-    //             printf("Opcao: ");
-    //             scanf("%d", &opcao);
-    //             switch (opcao) {
-    //                 case 1:
-    //                     removerAluno();
-    //                     break;
-    //                 case 2:
-    //                     removerMateria();
-    //                     break;
-    //                 case 3:
-    //                     removerAlunoDeMateria();
-    //                     break;
-    //                 case 4:
-    //                     removerMateriaDeAluno();
-    //                     break;
-    //                 default:
-    //                     printf("Opcao invalida\n");
-    //                     break;
-    //             }
-    //             break;
-    //         case 3:
-    //             printf("Escolha uma das opcoes abaixo:\n");
-    //             printf("1. Procurar por Aluno\n");
-    //             printf("2. Procurar por Materia\n");
-    //             printf("Opcao: ");
-    //             scanf("%d", &opcao);
-    //             switch (opcao) {
-    //                 case 1:
-    //                     procurarPorAluno();
-    //                     break;
-    //                 case 2:
-    //                     procurarPorMateria();
-    //                     break;
-    //                 default:
-    //                     printf("Opcao invalida\n");
-    //                     break;
-    //             }
-    //             break;
-    //         case 4:
-    //             printf("Encerrando programa...\n");
-    //             break;
-    //         default:
-    //             printf("Opcao invalida\n");
-    //             break;
-    //     }
-    // } while (opcao != 4);
-
-    // return 0;
-    
-    LED *dhead = NULL;
-    LEA *head = NULL;
-    dhead = newLED(1337,"LAB PROG I","CEL DUARTE",100,dhead);
-    dhead = newLED(1330,"MATDIS","VELOSO",120,dhead);
-    head = newLEA(21032,"LEO VICTOR","01643459309",head);
-    head = newLEA(21034,"LETICIA CRUZ VASCO","01613379309",head);
-    dhead->alunoList = newAluno(21032,"LEO VICTOR","01643459309",dhead->alunoList);
-    dhead->alunoList = newAluno(21034,"LETICIA CRUZ VASCO","01613379309",dhead->alunoList);
-    dhead->prev->alunoList = newAluno(21032,"LEO VICTOR","01643459309",dhead->prev->alunoList);
-    dhead->prev->alunoList = newAluno(21034,"LETICIA CRUZ VASCO","01613379309",dhead->prev->alunoList);
-    showAlunos(&(dhead->alunoList));
-    showAlunos(&(dhead->prev->alunoList));
-    removerAluno(&head,&dhead);
-    showAlunos(&(dhead->alunoList));
-    showAlunos(&(dhead->prev->alunoList));
+int main() {    
+    LEA *alunos = NULL;
+    alunos = newLEA(21032,"LEO VICTOR","016",alunos);
+    alunos = newLEA(21061,"VITOR SAKAI","434",alunos);
+    procurarPorAluno(&alunos,NOME);
     return 0;
 }
 
@@ -257,5 +155,87 @@ void removerMateria(LED **discHead, LEA **alunoHead) {
     removeLEDbyIndex(discHead, removeableIndex);
 }
 
-void procurarPorAluno() {}
-void procurarPorMateria() {}
+void procurarPorAluno(LEA **endHead, int searchMode) {
+    LEA *iter = *endHead;
+    if(searchMode == NOME) {
+        char nome[100];
+        printf("Digite Por qual nome deseja Procurar: ");
+        scanf("%[^\n]",nome);
+        while(strcmp(iter->nome,nome)!=0) if(iter->prev) iter = iter->prev;
+        else {
+            iter = NULL;
+            free(iter);
+            return ;
+        };
+    } else if(searchMode == NUMERO) {
+        int numero;
+        printf("Digite Por qual Numero deseja procurar: ");
+        scanf("%d",&numero);
+        while(iter->numero != numero) if(iter->prev) iter = iter->prev;
+        else {
+            iter = NULL;
+            free(iter);
+            return ;
+        };
+    } else if(searchMode == CPF_PROF) {
+        char cpf[12];
+        printf("Digite o CPF pelo qual deseja procurar: ");
+        scanf("%s",cpf);
+        while(strcmp(iter->cpf,cpf)!=0) if(iter->prev) iter = iter->prev;
+        else {
+            iter = NULL;
+            free(iter);
+            return ;
+        };
+    } else printf("NO SEARCHMODE SELECTED!\n");
+    
+    printf("%5s %6s %50s %11s\n","INDEX","NUMERO", "NOME", "CPF");
+    printf("%5d %6d %50s %11s\n",iter->index,iter->numero,iter->nome, iter->cpf);
+    iter = NULL;
+    free(iter);
+    return ;
+}
+
+void procurarPorMateria(int searchMode, LED **endHead) {
+    LED *iter = *endHead;
+    if(searchMode == NOME) {
+        char nome[100];
+        printf("Digite Por qual nome deseja Procurar: ");
+        scanf("%[^\n]",nome);
+        while(strcmp(iter->nome,nome)!=0) if(iter->prev) iter = iter->prev;
+        else {
+            iter = NULL;
+            free(iter);
+            return ;
+        };
+    } else if(searchMode == NUMERO) {
+        int numero;
+        printf("Digite Por qual Numero deseja procurar: ");
+        scanf("%d",&numero);
+        while(iter->numero != numero) if(iter->prev) iter = iter->prev;
+        else {
+            iter = NULL;
+            free(iter);
+            return ;
+        };
+    } else if(searchMode == CPF_PROF) {
+        char prof[100];
+        printf("Digite o Professor pelo qual deseja procurar: ");
+        scanf("%s",prof);
+        while(strcmp(iter->prof,prof)!=0) if(iter->prev) iter = iter->prev;
+        else {
+            iter = NULL;
+            free(iter);
+            return ;
+        };
+    } else {
+        printf("NO SEARCHMODE SELECTED!\n");
+        return ;   
+    }
+    
+    printf("%5s %6s %50s %50s %8s\n","INDEX","NUMERO", "NOME", "PROF", "CREDITOS");
+    printf("%5d %6d %50s %50s %8d\n",iter->index,iter->numero,iter->nome, iter->prof,iter->creditos);
+    iter = NULL;
+    free(iter);
+    return ;
+}

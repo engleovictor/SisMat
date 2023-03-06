@@ -28,7 +28,7 @@ void removeAlunobyIndex(Aluno **endHead, int index) {
         return ;
     }
     while(iter->index != index) iter = iter->prev; 
-    if(!(iter->prev)&!(iter->next)) {
+    if((!(iter->prev))&&(!(iter->next))) {
         (*endHead) = NULL;
         free(iter);
         return ;

@@ -92,12 +92,18 @@ void removerAluno(LEA **alunoHead, LED **discHead) {
     printf("Escolha o Aluno que deseja remover por Index: ");
     int opt;
     LEA *iter = *alunoHead;
-    int removeableIndex = iter->index;
     scanf("%d",&opt);
     //
     // Verificar se pode!
     // 
     while(iter->index != opt) iter = iter->prev;
+    int removeableIndex = iter->index;
+    // REMOVER TXT LEA(cpf)
+    char filename[24] = "LEAfiles/LEA";
+    strcat(filename,iter->cpf);
+    int rmst = remove(filename);
+    // 
+    
     LED *iterDisc = *discHead;
     if(iterDisc) {
         int tam = iterDisc->index + 1;
@@ -106,11 +112,11 @@ void removerAluno(LEA **alunoHead, LED **discHead) {
             iterDisc = iterDisc->prev;
         }
     }
+    removeLEAbyIndex(alunoHead, removeableIndex);
     iterDisc = NULL;
     free(iterDisc);
     iter = NULL;
     free(iter);
-    removeLEAbyIndex(alunoHead, removeableIndex);
 }
 
 void removerMateria(LED **discHead, LEA **alunoHead) {
@@ -118,12 +124,18 @@ void removerMateria(LED **discHead, LEA **alunoHead) {
     printf("Escolha a Materia que deseja remover por Index: ");
     int opt;
     LED *iter = *discHead;
-    int removeableIndex = iter->index;
     scanf("%d",&opt);
     //
     // Verificar se pode!
     // 
-    while(iter->index != opt) iter = iter->prev; 
+    while(iter->index != opt) iter = iter->prev;
+    int removeableIndex = iter->index;
+    // REMOVER A LISTA
+    char filename[104] = "LEDfiles/LED";
+    strcat(filename,iter->nome);
+    remove(filename);
+    //
+
     LEA *iterAluno = *alunoHead;
     if(iterAluno) {
         int tam = iterAluno->index + 1;

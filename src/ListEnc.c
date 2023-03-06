@@ -28,13 +28,15 @@ LEA *newLEA(int numero, char *nome, char *cpf, LEA *prev) {
 void removeLEAbyIndex(LEA **endHead, int index) {
     LEA *iter = (*endHead);
     if((*endHead)->index == index && index != 0) {
+        printf("\nHOPPER 0\n");
         (*endHead) = (*endHead)->prev;
         (*endHead)->next = NULL;
         free(iter);
         return ;
     }
     while(iter->index != index) iter = iter->prev; 
-    if(!(iter->prev)&!(iter->next)) {
+    if((!(iter->prev))&&(!(iter->next))) {
+        printf("\nHOPPER 1\n");
         (*endHead) = NULL;
         free(iter);
         return ;
@@ -132,8 +134,7 @@ LED *newLED(int numero, char *nome, char *prof, int creditos,LED *prev) {
     //ADD ALUNOLIST;
     char filename[104] = "LEDfiles/LED";
     strcat(filename,nome);
-    //MODIFICAR
-    //attachAlunoListFromFile(&new,filename);
+    attachAlunoListFromFile(&new,filename);
     return new;
 }
 
@@ -146,7 +147,7 @@ void removeLEDbyIndex(LED **endHead, int index) {
         return ;
     }
     while(iter->index != index) iter = iter->prev; 
-    if(!(iter->prev)&!(iter->next)) {
+    if((!(iter->prev))&&(!(iter->next))) {
         (*endHead) = NULL;
         free(iter);
         return ;

@@ -18,6 +18,7 @@ int main() {
         printf("6 - Remover aluno de materia\n");
         printf("7 - Procurar por aluno\n");
         printf("8 - Procurar por materia\n");
+        printf("9 - Mostrar\n");
         printf("0 - Sair\n");
         scanf("%d", &opcao);
 
@@ -46,6 +47,10 @@ int main() {
             case 8:
                 procurarPorMateria(&discHead, 0);
                 break;
+            case 9:
+                showLEAs(&alunoHead);
+                showLEDs(&discHead);
+                break;
             case 0:
                 printf("Encerrando o programa.\n");
                 break;
@@ -54,6 +59,9 @@ int main() {
                 break;
         }
     } while (opcao != 0);
+
+    saveLEAInFile(&alunoHead, "LEA.txt");
+    saveLEDInFile(&discHead,  "LED.txt");
 
     return 0;
 }

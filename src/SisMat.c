@@ -64,8 +64,8 @@ void cadastrarAlunoEmMateria(LEA **alunoHead, LED **discHead) {
     free(iter1);
 }
 
-void removerAlunoDeMateria(LED **endHead) {
-    showLEDs(endHead);
+void removerAlunoDeMateria(LED **discHead, LEA **alunoHead) {
+    showLEDs(discHead);
     printf("Escolha o Index da Materia da qual gostaria de remover o Aluno: ");
     int opt;
     scanf("%d",&opt);
@@ -73,7 +73,7 @@ void removerAlunoDeMateria(LED **endHead) {
     // Verificar se pode!!
     //
     //
-    LED *iter = *endHead;
+    LED *iter = *discHead;
     while(iter->index != opt) iter = iter->prev;
     showAlunos(&(iter->alunoList));
     printf("Escolha o Index do Aluno que deseja remover dessa materia: ");
@@ -82,7 +82,23 @@ void removerAlunoDeMateria(LED **endHead) {
     // Verificar se pode!!
     //
     //
+
+    //
+    Aluno *aluno = iter->alunoList;
+    while(aluno->index != opt) aluno = aluno->prev;
+    LEA *iterAluno = *alunoHead;
+    while(strcmp(iterAluno->cpf,aluno->cpf)!=0) iterAluno = iterAluno->prev;
+
+    removeDiscbyDiscName(&(iterAluno->discList),iter->nome);
+
+    //
+
     removeAlunobyIndex(&(iter->alunoList),opt);
+    
+    aluno = NULL;
+    free(aluno);
+    iterAluno = NULL;
+    free(iterAluno);
     iter = NULL;
     free(iter);
 }
@@ -234,4 +250,39 @@ void procurarPorMateria(LED **endHead, int searchMode) {
     iter = NULL;
     free(iter);
     return ;
+}
+
+void mostrarAlunoseMaterias(LEA **alunoHead, LED **discHead) {
+    showLEAs(alunoHead);
+    showLEDs(discHead);
+}
+
+void mostrarMateriasdeAluno(LEA **alunoHead) {
+    showLEAs(alunoHead);
+    int opt;
+    printf("Escolha por Index: ");
+    scanf("%d", &opt);
+    LEA *iter = *alunoHead;
+    //
+    // Verificar se pode!!
+    //
+    while(iter->index != opt) iter = iter->prev;
+    showDiscs(&(iter->discList));
+    iter = NULL;
+    free(iter);
+}
+
+void mostrarAlunosdeMateria(LED **discHead) {
+    showLEDs(discHead);
+    int opt;
+    printf("Escolha por Index: ");
+    scanf("%d", &opt);
+    LED *iter = *discHead;
+    //
+    // Verificar se pode!!
+    //
+    while(iter->index != opt) iter = iter->prev;
+    showAlunos(&(iter->alunoList));
+    iter = NULL;
+    free(iter);
 }

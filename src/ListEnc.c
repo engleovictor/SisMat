@@ -28,7 +28,6 @@ LEA *newLEA(int numero, char *nome, char *cpf, LEA *prev) {
 void removeLEAbyIndex(LEA **endHead, int index) {
     LEA *iter = (*endHead);
     if((*endHead)->index == index && index != 0) {
-        printf("\nHOPPER 0\n");
         (*endHead) = (*endHead)->prev;
         (*endHead)->next = NULL;
         free(iter);
@@ -36,7 +35,6 @@ void removeLEAbyIndex(LEA **endHead, int index) {
     }
     while(iter->index != index) iter = iter->prev; 
     if((!(iter->prev))&&(!(iter->next))) {
-        printf("\nHOPPER 1\n");
         (*endHead) = NULL;
         free(iter);
         return ;

@@ -10,16 +10,19 @@ int main() {
     int opcao;
     do {
         printf("Escolha uma opcao:\n");
-        printf("1 - Cadastrar aluno\n");
-        printf("2 - Cadastrar materia\n");
-        printf("3 - Cadastrar aluno em materia\n");
-        printf("4 - Remover aluno\n");
-        printf("5 - Remover materia\n");
-        printf("6 - Remover aluno de materia\n");
-        printf("7 - Procurar por aluno\n");
-        printf("8 - Procurar por materia\n");
-        printf("9 - Mostrar\n");
-        printf("0 - Sair\n");
+        printf("1  - Cadastrar aluno\n");
+        printf("2  - Cadastrar materia\n");
+        printf("3  - Cadastrar aluno em materia\n");
+        printf("4  - Remover aluno\n");
+        printf("5  - Remover materia\n");
+        printf("6  - Remover aluno de materia\n");
+        printf("7  - Procurar por aluno\n");
+        printf("8  - Procurar por materia\n");
+        printf("9  - Mostrar\n");
+        printf("10 - Mostrar Alunos de uma Materia\n");
+        printf("11 - Mostrar Materias de um Aluno\n");
+        printf("0  - Sair\n");
+
         scanf("%d", &opcao);
 
         switch(opcao) {
@@ -39,7 +42,7 @@ int main() {
                 removerMateria(&discHead, &alunoHead);
                 break;
             case 6:
-                removerAlunoDeMateria(&discHead);
+                removerAlunoDeMateria(&discHead, &alunoHead);
                 break;
             case 7:
                 procurarPorAluno(&alunoHead, 0);
@@ -48,8 +51,13 @@ int main() {
                 procurarPorMateria(&discHead, 0);
                 break;
             case 9:
-                showLEAs(&alunoHead);
-                showLEDs(&discHead);
+                mostrarAlunoseMaterias(&alunoHead, &discHead);
+                break;
+            case 10:
+                mostrarAlunosdeMateria(&discHead);
+                break;
+            case 11:
+                mostrarMateriasdeAluno(&alunoHead);
                 break;
             case 0:
                 printf("Encerrando o programa.\n");

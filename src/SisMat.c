@@ -170,6 +170,7 @@ void removerMateria(LED **discHead, LEA **alunoHead) {
 void procurarPorAluno(LEA **endHead, int searchMode) {
     LEA *iter = *endHead;
     if(searchMode == NOME) {
+        getchar();
         char nome[100];
         printf("Digite Por qual nome deseja Procurar: ");
         scanf("%[^\n]",nome);
@@ -190,6 +191,7 @@ void procurarPorAluno(LEA **endHead, int searchMode) {
             return ;
         };
     } else if(searchMode == CPF_PROF) {
+        getchar();
         char cpf[12];
         printf("Digite o CPF pelo qual deseja procurar: ");
         scanf("%s",cpf);

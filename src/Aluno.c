@@ -44,16 +44,20 @@ void removeAlunobyIndex(Aluno **endHead, int index) {
 }
 
 void removeAlunobyCPF(Aluno **endHead, char *cpf) {
-    Aluno *iter = (*endHead);
-    while(strcmp(iter->cpf,cpf)!=0) if(iter->prev) iter = iter->prev;
-    else {
+    if(*endHead) {
+        Aluno *iter = (*endHead);
+        while(strcmp(iter->cpf,cpf)!=0) if(iter->prev) iter = iter->prev;
+        else {
+            iter = NULL;
+            free(iter);
+            return ;
+        }
+        removeAlunobyIndex(endHead,iter->index);
         iter = NULL;
         free(iter);
+    } else {
         return ;
     }
-    removeAlunobyIndex(endHead,iter->index);
-    iter = NULL;
-    free(iter);
 }
 
 void showAlunos(Aluno **endHead) {

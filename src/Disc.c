@@ -45,18 +45,22 @@ void removeDiscbyIndex(Disc **endHead, int index) {
 }
 
 void removeDiscbyDiscName(Disc **endHead, char *nome) {
-    Disc *iter = (*endHead);
-    while(strcmp(iter->nome,nome)!=0) {
-        if(iter->prev) iter = iter->prev;
-        else {
-            iter = NULL;
-            free(iter);
-            return ;
+    if(*endHead) {
+        Disc *iter = (*endHead);
+        while(strcmp(iter->nome,nome)!=0) {
+            if(iter->prev) iter = iter->prev;
+            else {
+                iter = NULL;
+                free(iter);
+                return ;
+            }
         }
+        removeDiscbyIndex(endHead,iter->index);
+        iter = NULL;
+        free(iter);
+    } else {
+        return ;
     }
-    removeDiscbyIndex(endHead,iter->index);
-    iter = NULL;
-    free(iter);
 }
 
 void showDiscs(Disc **endHead) {

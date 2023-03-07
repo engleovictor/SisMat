@@ -23,16 +23,8 @@ Then:
 
 compile:
 
-    $ gcc -o Aluno.o src/Aluno.c -c
-
-    $ gcc -o Disc.o src/Disc.c -c
+    $ bash autoc.sh
     
-    $ gcc -o ListEnc.o src/ListEnc.c -c
-
-Now compile main:
-
-    gcc main.c Aluno.o Disc.o ListEnc.o -o SisMat
-
 Finally:
 
-    $ ./SisMat
+    $ ./SisMatprogram

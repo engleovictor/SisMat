@@ -203,13 +203,19 @@ int removerAluno(LEA **alunoHead, LED **discHead) {
     printf("Escolha o Aluno que deseja remover por Index: ");
     int opt;
     LEA *iter = *alunoHead;
+
+    if(!iter) {
+        free(iter);
+        return 1;
+    }
+
     scanf("%d",&opt);
     //
     int max_index = iter->index;
     if(opt > max_index) {
         iter = NULL;
         free(iter);
-        return 1;
+        return 2;
     }
     // 
     while(iter->index != opt) iter = iter->prev;
@@ -242,13 +248,19 @@ int removerMateria(LED **discHead, LEA **alunoHead) {
     printf("Escolha a Materia que deseja remover por Index: ");
     int opt;
     LED *iter = *discHead;
+    if(!iter) {
+        free(iter);
+        return 1;
+    }
+
+
     scanf("%d",&opt);
     //
     int max_index = iter->index;
     if(opt > max_index) {
         iter = NULL;
         free(iter);
-        return 1;
+        return 2;
     }
     // 
     while(iter->index != opt) iter = iter->prev;

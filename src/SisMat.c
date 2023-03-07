@@ -15,7 +15,20 @@ void cadastrarAluno(LEA **endHead) {
     printf("Digite seu CPF: ");
     scanf("%s", cpf);
 
+    LEA *iter = *endHead;
+    int tam = iter->index + 1;
+    if(strcmp(iter->cpf,cpf) == 0) return ;
+    for(int i=0;i<tam;i++) {
+        iter = iter->prev;
+        if(strcmp(iter->cpf,cpf) == 0) return ;
+    }
+
+    iter = NULL;
+    free(iter);
+
     *endHead = newLEA(numero,nome,cpf,*endHead);
+
+    return ;
 }
 
 void cadastrarMateria(LED **endHead) {
@@ -23,16 +36,29 @@ void cadastrarMateria(LED **endHead) {
     char nome[100], prof[100];
     printf("Digite seu Numero: ");
     scanf("%d", &numero);
-    getchar(); // descarta o caractere de nova linha
+    getchar();
     printf("Digite seu Nome: ");
-    scanf(" %[^\n]", nome); // adiciona um espaço antes do especificador de formato
+    scanf(" %[^\n]", nome);
     printf("Digite seu Professor: ");
     getchar();
     scanf("%[^\n]", prof);
     printf("Digite os Creditos: ");
     scanf("%d", &creditos);
 
+    LED *iter = *endHead;
+    int tam = iter->index + 1;
+    if(strcmp(iter->prof,prof) == 0) return ;
+    for(int i=0;i<tam;i++) {
+        iter = iter->prev;
+        if(strcmp(iter->prof,prof) == 0) return ;
+    }
+
+    iter = NULL;
+    free(iter);
+
     *endHead = newLED(numero,nome,prof,creditos,*endHead);
+
+    return ;
 }
 
 void cadastrarAlunoEmMateria(LEA **alunoHead, LED **discHead) {
@@ -42,8 +68,8 @@ void cadastrarAlunoEmMateria(LEA **alunoHead, LED **discHead) {
     printf("Escolha o Aluno por index: ");
     scanf("%d",&opt);
     //
-    //TEM QUE VERIFICAR AQUI NESSE PASSO SE ESSE NUMERO É POSSIVEL !!!
-    //
+    int max_index = iter0->index;
+    if(opt > max_index) return ;
     //
     while(iter0->index != opt) iter0 = iter0->prev;
 
@@ -52,16 +78,21 @@ void cadastrarAlunoEmMateria(LEA **alunoHead, LED **discHead) {
     printf("Escolha a Materia por index: ");
     scanf("%d",&opt);
     //
-    //TEM QUE VERIFICAR AQUI NESSE PASSO SE ESSE NUMERO É POSSIVEL !!!
-    //
+    max_index = iter1->index;
+    if(opt > max_index) return ;
     //
     while(iter1->index != opt) iter1 = iter1->prev;
+
+    //////////////////////////////////////////////////// VERIFICAR SE O ALUNO JA ESTA NA MATERIA !!
+
     iter1->alunoList = newAluno(iter0->numero,iter0->nome,iter0->cpf,iter1->alunoList);
     iter0->discList  = newDisc(iter1->numero,iter1->nome,iter1->prof,iter1->creditos,iter0->discList);
     iter0 = NULL;
     iter1 = NULL;
     free(iter0);
     free(iter1);
+
+    return ;
 }
 
 void removerAlunoDeMateria(LED **discHead, LEA **alunoHead) {
@@ -69,29 +100,26 @@ void removerAlunoDeMateria(LED **discHead, LEA **alunoHead) {
     printf("Escolha o Index da Materia da qual gostaria de remover o Aluno: ");
     int opt;
     scanf("%d",&opt);
-    //
-    // Verificar se pode!!
-    //
-    //
     LED *iter = *discHead;
+    //
+    int max_index = iter->index;
+    if(opt > max_index) return ;
+    //
     while(iter->index != opt) iter = iter->prev;
     showAlunos(&(iter->alunoList));
     printf("Escolha o Index do Aluno que deseja remover dessa materia: ");
     scanf("%d",&opt);
-    //
-    // Verificar se pode!!
-    //
-    //
-
-    //
+    
     Aluno *aluno = iter->alunoList;
+    //
+    max_index = aluno->index;
+    if(opt > max_index) return ;
+    //
     while(aluno->index != opt) aluno = aluno->prev;
     LEA *iterAluno = *alunoHead;
     while(strcmp(iterAluno->cpf,aluno->cpf)!=0) iterAluno = iterAluno->prev;
 
     removeDiscbyDiscName(&(iterAluno->discList),iter->nome);
-
-    //
 
     removeAlunobyIndex(&(iter->alunoList),opt);
     
@@ -101,6 +129,8 @@ void removerAlunoDeMateria(LED **discHead, LEA **alunoHead) {
     free(iterAluno);
     iter = NULL;
     free(iter);
+
+    return ;
 }
 
 void removerAluno(LEA **alunoHead, LED **discHead) {
@@ -110,16 +140,16 @@ void removerAluno(LEA **alunoHead, LED **discHead) {
     LEA *iter = *alunoHead;
     scanf("%d",&opt);
     //
-    // Verificar se pode!
+    int max_index = iter->index;
+    if(opt > max_index) return ;
     // 
     while(iter->index != opt) iter = iter->prev;
     int removeableIndex = iter->index;
-    // REMOVER TXT LEA(cpf)
+    //
     char filename[24] = "LEAfiles/LEA";
     strcat(filename,iter->cpf);
     int rmst = remove(filename);
     // 
-    
     LED *iterDisc = *discHead;
     if(iterDisc) {
         int tam = iterDisc->index + 1;
@@ -133,6 +163,8 @@ void removerAluno(LEA **alunoHead, LED **discHead) {
     free(iterDisc);
     iter = NULL;
     free(iter);
+
+    return ;
 }
 
 void removerMateria(LED **discHead, LEA **alunoHead) {
@@ -142,16 +174,16 @@ void removerMateria(LED **discHead, LEA **alunoHead) {
     LED *iter = *discHead;
     scanf("%d",&opt);
     //
-    // Verificar se pode!
+    int max_index = iter->index;
+    if(opt > max_index) return ;
     // 
     while(iter->index != opt) iter = iter->prev;
     int removeableIndex = iter->index;
-    // REMOVER A LISTA
+    //
     char filename[104] = "LEDfiles/LED";
     strcat(filename,iter->nome);
     remove(filename);
     //
-
     LEA *iterAluno = *alunoHead;
     if(iterAluno) {
         int tam = iterAluno->index + 1;
@@ -160,11 +192,13 @@ void removerMateria(LED **discHead, LEA **alunoHead) {
             iterAluno = iterAluno->prev;
         }
     }
+    removeLEDbyIndex(discHead, removeableIndex);
     iterAluno = NULL;
     free(iterAluno);
     iter = NULL;
     free(iter);
-    removeLEDbyIndex(discHead, removeableIndex);
+    
+    return ;
 }
 
 void procurarPorAluno(LEA **endHead, int searchMode) {
@@ -201,7 +235,12 @@ void procurarPorAluno(LEA **endHead, int searchMode) {
             free(iter);
             return ;
         };
-    } else printf("NO SEARCHMODE SELECTED!\n");
+    } else {
+        printf("NO SEARCHMODE SELECTED!\n");
+        iter = NULL;
+        free(iter);
+        return ;   
+    }
     
     printf("%5s %6s %50s %11s\n","INDEX","NUMERO", "NOME", "CPF");
     printf("%5d %6d %50s %11s\n",iter->index,iter->numero,iter->nome, iter->cpf);
@@ -244,6 +283,8 @@ void procurarPorMateria(LED **endHead, int searchMode) {
         };
     } else {
         printf("NO SEARCHMODE SELECTED!\n");
+        iter = NULL;
+        free(iter);
         return ;   
     }
     
@@ -257,6 +298,7 @@ void procurarPorMateria(LED **endHead, int searchMode) {
 void mostrarAlunoseMaterias(LEA **alunoHead, LED **discHead) {
     showLEAs(alunoHead);
     showLEDs(discHead);
+    return ;
 }
 
 void mostrarMateriasdeAluno(LEA **alunoHead) {
@@ -266,7 +308,8 @@ void mostrarMateriasdeAluno(LEA **alunoHead) {
     scanf("%d", &opt);
     LEA *iter = *alunoHead;
     //
-    // Verificar se pode!!
+    int max_index = iter->index;
+    if(opt > max_index) return ;
     //
     while(iter->index != opt) iter = iter->prev;
     showDiscs(&(iter->discList));
@@ -281,7 +324,8 @@ void mostrarAlunosdeMateria(LED **discHead) {
     scanf("%d", &opt);
     LED *iter = *discHead;
     //
-    // Verificar se pode!!
+    int max_index = iter->index;
+    if(opt > max_index) return ;
     //
     while(iter->index != opt) iter = iter->prev;
     showAlunos(&(iter->alunoList));

@@ -1,4 +1,3 @@
-# !/bin/bash
 
 gcc src/Aluno.c -o Aluno.o -c
 gcc src/Disc.c -o Disc.o -c

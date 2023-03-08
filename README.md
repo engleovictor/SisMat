@@ -19,12 +19,13 @@ Then:
 
     $ cd SisMat
 
-    $ mkdir LEAfiles LEDfiles
 
 compile:
 
-    $ bash autoc.sh
+    $ bash autoc.sh           # for Linux;
+
+    > powershell autoc.ps1    # for Windows; 
     
 Finally:
 
-    $ ./SisMatprogram
+    $ ./SisMatProgram

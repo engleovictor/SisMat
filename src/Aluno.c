@@ -22,9 +22,9 @@ Aluno *newAluno(int numero, char *nome, char *cpf, Aluno *prev) {
 void removeAlunobyIndex(Aluno **endHead, int index) {
     Aluno *iter = (*endHead);
     if((*endHead)->index == index && index != 0) {
-        (*endHead) = (*endHead)->prev;
-        (*endHead)->next = NULL;
-        free(iter);
+        (*endHead) = (*endHead)->prev; 
+        (*endHead)->next = NULL; 
+        free(iter); 
         return ;
     }
     while(iter->index != index) iter = iter->prev; 
@@ -41,23 +41,6 @@ void removeAlunobyIndex(Aluno **endHead, int index) {
     }
     iter = NULL;
     free(iter);
-}
-
-void removeAlunobyCPF(Aluno **endHead, char *cpf) {
-    if(*endHead) {
-        Aluno *iter = (*endHead);
-        while(strcmp(iter->cpf,cpf)!=0) if(iter->prev) iter = iter->prev;
-        else {
-            iter = NULL;
-            free(iter);
-            return ;
-        }
-        removeAlunobyIndex(endHead,iter->index);
-        iter = NULL;
-        free(iter);
-    } else {
-        return ;
-    }
 }
 
 void showAlunos(Aluno **endHead) {
@@ -116,5 +99,22 @@ void saveAlunoInFile(Aluno **endHead, char *filename) {
     } else {
         printf("ERRO AO SALVAR!! SAINDO...\n");
         exit(1);
+    }
+}
+
+void removeAlunobyCPF(Aluno **endHead, char *cpf) {
+    if(*endHead) {
+        Aluno *iter = (*endHead);
+        while(strcmp(iter->cpf,cpf)!=0) if(iter->prev) iter = iter->prev;
+        else {
+            iter = NULL;
+            free(iter);
+            return ;
+        }
+        removeAlunobyIndex(endHead,iter->index);
+        iter = NULL;
+        free(iter);
+    } else {
+        return ;
     }
 }

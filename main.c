@@ -5,71 +5,108 @@
 #include "./include/SisMat.h"
 
 int main() {
-    LEA *alunoHead = loadLEAsFromText("LEA.txt");
-    LED *discHead  = loadLEDsFromText("LED.txt");
+    Aluno *alunos = loadAlunosFromText("aluno.txt");
+    Disc *discs = loadDiscsFromText("disc.txt");
+    Periodo *periodos = loadData("periodo.txt");
+    
     int opcao;
-    do {
-        printf("Escolha uma opcao:\n");
-        printf("1  - Cadastrar aluno\n");
-        printf("2  - Cadastrar materia\n");
-        printf("3  - Cadastrar aluno em materia\n");
-        printf("4  - Remover aluno\n");
-        printf("5  - Remover materia\n");
-        printf("6  - Remover aluno de materia\n");
-        printf("7  - Procurar por aluno\n");
-        printf("8  - Procurar por materia\n");
-        printf("9  - Mostrar\n");
-        printf("10 - Mostrar Alunos de uma Materia\n");
-        printf("11 - Mostrar Materias de um Aluno\n");
-        printf("0  - Sair\n");
 
+    do {
+        printf("\n---MENU---\n");
+        printf("1 - Cadastrar Aluno\n");
+        printf("2 - Cadastrar Matéria\n");
+        printf("3 - Cadastrar Período\n");
+        printf("4 - Remover Período\n");
+        printf("5 - Remover Matéria\n");
+        printf("6 - Remover Aluno\n");
+        printf("7 - Acessar Periodo\n");
+        printf("0 - Sair\n");
+
+        printf("Escolha uma opção: ");
         scanf("%d", &opcao);
 
-        switch(opcao) {
+        switch (opcao) {
             case 1:
-                cadastrarAluno(&alunoHead);
+                cadastrarAluno(&alunos);
                 break;
             case 2:
-                cadastrarMateria(&discHead);
+                cadastrarMateria(&discs);
                 break;
             case 3:
-                cadastrarAlunoEmMateria(&alunoHead, &discHead);
+                cadastrarPeriodo(&periodos);
                 break;
             case 4:
-                removerAluno(&alunoHead, &discHead);
+                removerPeriodo(&periodos);
                 break;
             case 5:
-                removerMateria(&discHead, &alunoHead);
+                removerMateria(&discs, &periodos);
                 break;
             case 6:
-                removerAlunoDeMateria(&discHead, &alunoHead);
+                removerAluno(&alunos, &periodos);
                 break;
             case 7:
-                procurarPorAluno(&alunoHead, 0);
-                break;
-            case 8:
-                procurarPorMateria(&discHead, 0);
-                break;
-            case 9:
-                mostrarAlunoseMaterias(&alunoHead, &discHead);
-                break;
-            case 10:
-                mostrarAlunosdeMateria(&discHead);
-                break;
-            case 11:
-                mostrarMateriasdeAluno(&alunoHead);
-                break;
+                if(!periodos) {
+                    printf("Nenhum Periodo Cadastrado\n");
+                    break;
+                }
+                showPeriodos(&periodos);
+                int opt;
+                printf("Escolha Qual periodo acessar: ");
+                scanf("%d",&opt);
+                if(opt > periodos->index) {
+                    printf("Nao ha esse periodo!\n");
+                    break;
+                }
+                while(periodos->index != opt) periodos = periodos->prev; 
+                opt = 1;
+                    do {
+                        printf("\n---MENU - PERIODO: %s\n",periodos->data);
+                        printf("1 - Cadastrar Matéria em Período\n");
+                        printf("2 - Cadastrar Aluno em Matéria\n");
+                        printf("3 - Remover Aluno de Matéria\n");
+                        printf("4 - Remover Matéria de Período\n");
+                        printf("0 - Sair p/ Menu Principal\n");
+
+                        printf("Escolha uma opção: ");
+                        scanf("%d", &opt);
+
+                        switch (opt) {
+                            case 1:
+                                cadastrarMateriaemPeriodo(&discs, &periodos);
+                                break;
+                            case 2:
+                                cadastrarAlunoemMateria(&alunos, &periodos);
+                                break;
+                            case 3:
+                                removerAlunoDeMateria(&periodos);
+                                break;
+                            case 4:
+                                removerMateriadePeriodo(&periodos);
+                                break;
+                            case 0:
+                                printf("Saindo para Menu Principal.\n");
+                                break;
+                            default:
+                                printf("Opção inválida!\n");
+                                break;
+                        }
+
+                    } while (opt != 0);
+                    if(periodos) while(periodos->next) periodos = periodos->next;
+                    break;
             case 0:
-                printf("Encerrando o programa.\n");
+                printf("Saindo...\n");
                 break;
             default:
-                printf("Opcao invalida. Tente novamente.\n");
+                printf("Opção inválida!\n");
                 break;
         }
+
     } while (opcao != 0);
 
-    saveLEAInFile(&alunoHead, "LEA.txt");
-    saveLEDInFile(&discHead,  "LED.txt");
-
+    saveAlunoInFile(&alunos,"aluno.txt");
+    saveDiscInFile(&discs,"disc.txt");
+    saveData(&periodos,"periodo.txt");
+    
     return 0;
 }

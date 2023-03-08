@@ -1,22 +1,21 @@
 #ifndef SISMAT_H
 #define SISMAT_H
 
-#include "./ListEnc.h"
+#include "./Periodo.h"
 
 typedef enum {
     NOME, NUMERO, CPF_PROF 
 } SEARCH_MODE;
 
-int cadastrarAluno(LEA **endHead);
-int cadastrarMateria(LED **endHead);
-int cadastrarAlunoEmMateria(LEA **alunoHead, LED **discHead);
-int removerAluno(LEA **alunoHead, LED **discHead);
-int removerMateria(LED **discHead, LEA **alunoHead);
-int removerAlunoDeMateria(LED **discHead, LEA **alunoHead);
-int procurarPorAluno(LEA **endHead, int searchMode);
-int procurarPorMateria(LED **endHead, int searchMode);
-int mostrarAlunoseMaterias(LEA **alunoHead, LED **discHead);
-int mostrarMateriasdeAluno(LEA **alunoHead);
-int mostrarAlunosdeMateria(LED **discHead);
+int cadastrarAluno(Aluno **endHead);
+int cadastrarMateria(Disc **endHead);
+int cadastrarPeriodo(Periodo **endHead);
+int cadastrarMateriaemPeriodo(Disc **discHead, Periodo **periodoHead);
+int cadastrarAlunoemMateria(Aluno **alunoHead, Periodo **periodo);
+int removerAlunoDeMateria(Periodo **periodo);
+int removerMateriadePeriodo(Periodo **periodo);
+int removerPeriodo(Periodo **periodos);
+int removerMateria(Disc **discHead, Periodo **periodoHead);
+int removerAluno(Aluno **alunoHead, Periodo **periodoHead);
 
 #endif /* SISMAT_H */

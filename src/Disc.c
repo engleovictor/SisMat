@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../include/Aluno.h"
 #include "../include/Disc.h"
 
 Disc *newDisc(int numero, char *nome, char *prof, int creditos, Disc *prev) {
@@ -17,6 +18,9 @@ Disc *newDisc(int numero, char *nome, char *prof, int creditos, Disc *prev) {
         new->index = prev->index + 1;
         prev->next = new;    
     }
+
+    new->alunoList = NULL;
+    
     return new;
 }
 
@@ -42,25 +46,6 @@ void removeDiscbyIndex(Disc **endHead, int index) {
     }
     iter = NULL;
     free(iter);
-}
-
-void removeDiscbyDiscName(Disc **endHead, char *nome) {
-    if(*endHead) {
-        Disc *iter = (*endHead);
-        while(strcmp(iter->nome,nome)!=0) {
-            if(iter->prev) iter = iter->prev;
-            else {
-                iter = NULL;
-                free(iter);
-                return ;
-            }
-        }
-        removeDiscbyIndex(endHead,iter->index);
-        iter = NULL;
-        free(iter);
-    } else {
-        return ;
-    }
 }
 
 void showDiscs(Disc **endHead) {
@@ -121,5 +106,24 @@ void saveDiscInFile(Disc **endHead, char *filename) {
     } else {
         printf("ERRO AO SALVAR!! SAINDO...\n");
         exit(1);
+    }
+}
+
+void removeDiscbyDiscName(Disc **endHead, char *nome) {
+    if(*endHead) {
+        Disc *iter = (*endHead);
+        while(strcmp(iter->nome,nome)!=0) {
+            if(iter->prev) iter = iter->prev;
+            else {
+                iter = NULL;
+                free(iter);
+                return ;
+            }
+        }
+        removeDiscbyIndex(endHead,iter->index);
+        iter = NULL;
+        free(iter);
+    } else {
+        return ;
     }
 }

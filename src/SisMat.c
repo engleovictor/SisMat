@@ -107,12 +107,8 @@ int cadastrarPeriodo(Periodo **endHead) {
 
 int cadastrarMateriaemPeriodo(Disc **discHead, Periodo **periodoHead) {
     if(!((*periodoHead)&&(*discHead))) return 1;
-    showPeriodos(periodoHead);
-    printf("Escolha o Periodo que deseja cadastrar: ");
     int opt;
-    scanf("%d",&opt);
     Periodo *iterPeriodo = *periodoHead;
-    while(iterPeriodo->index != opt) iterPeriodo = iterPeriodo->prev;
     showDiscs(discHead);
     printf("Escolha o Materia que deseja cadastrar no Periodo: ");
     scanf("%d",&opt);
@@ -185,46 +181,50 @@ int removerPeriodo(Periodo **periodos) {
 }
 
 int removerMateria(Disc **discHead, Periodo **periodoHead) {
-    if(!((*discHead)&&(*periodoHead))) return 1;
+    if(!(*discHead)) return 1;
     showDiscs(discHead);
     printf("Escolha a materia que deseja remover: ");
     int opt;
     scanf("%d", &opt);
-    Disc *iterDisc = *discHead;
-    while(iterDisc->index != opt) iterDisc = iterDisc->prev;
-    Periodo *iterPeriodo = *periodoHead;
-    while(iterPeriodo->prev) {
+    if(*periodoHead) {
+        Disc *iterDisc = *discHead;
+        while(iterDisc->index != opt) iterDisc = iterDisc->prev;
+        Periodo *iterPeriodo = *periodoHead;
+        while(iterPeriodo->prev) {
+            removeDiscbyDiscName(&(iterPeriodo->discList),iterDisc->nome);
+            iterPeriodo = iterPeriodo->prev;
+        }
         removeDiscbyDiscName(&(iterPeriodo->discList),iterDisc->nome);
-        iterPeriodo = iterPeriodo->prev;
     }
-    removeDiscbyDiscName(&(iterPeriodo->discList),iterDisc->nome);
+    removeDiscbyIndex(discHead,opt);
     return 0;
 }
 
 int removerAluno(Aluno **alunoHead, Periodo **periodoHead) {
-    if(!((*alunoHead)&&(*periodoHead))) return 1;
+    if(!(*alunoHead)) return 1;
     showAlunos(alunoHead);
     printf("Escolha o Aluno que deseja remover: ");
     int opt;
     scanf("%d", &opt);
     Aluno *iterAluno = *alunoHead;
     while(iterAluno->index != opt) iterAluno = iterAluno->prev;
+    if (*periodoHead) {
+        while((*periodoHead)->prev) {
+            
+            while((*periodoHead)->discList->prev) {
+                removeAlunobyCPF(&((*periodoHead)->discList->alunoList),iterAluno->cpf);
+                (*periodoHead)->discList = (*periodoHead)->discList->prev;
+            }
+            removeAlunobyCPF(&((*periodoHead)->discList->alunoList),iterAluno->cpf);
+        }
 
-    while((*periodoHead)->prev) {
-        
         while((*periodoHead)->discList->prev) {
             removeAlunobyCPF(&((*periodoHead)->discList->alunoList),iterAluno->cpf);
             (*periodoHead)->discList = (*periodoHead)->discList->prev;
         }
         removeAlunobyCPF(&((*periodoHead)->discList->alunoList),iterAluno->cpf);
+        while((*periodoHead)->next) (*periodoHead) = (*periodoHead)->next;
     }
-
-    while((*periodoHead)->discList->prev) {
-        removeAlunobyCPF(&((*periodoHead)->discList->alunoList),iterAluno->cpf);
-        (*periodoHead)->discList = (*periodoHead)->discList->prev;
-    }
-    removeAlunobyCPF(&((*periodoHead)->discList->alunoList),iterAluno->cpf);
-    removeAlunobyCPF(alunoHead,iterAluno->cpf);
-    while((*periodoHead)->next) (*periodoHead) = (*periodoHead)->next;
+    removeAlunobyIndex(alunoHead,opt);
     return 0;
 }

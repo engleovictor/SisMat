@@ -1,6 +1,4 @@
 *.o
 *.txt
-LEAfiles/*
-LEDfiles/*
-programa
+SisMatProgram
 .vscode/

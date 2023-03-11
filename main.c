@@ -13,15 +13,17 @@ int main() {
 
     do {
         printf("\n---MENU---\n");
-        printf("1 - Cadastrar Aluno\n");
-        printf("2 - Cadastrar Matéria\n");
-        printf("3 - Cadastrar Período\n");
-        printf("4 - Remover Período\n");
-        printf("5 - Remover Matéria\n");
-        printf("6 - Remover Aluno\n");
-        printf("7 - Acessar Periodo\n");
+        printf("1  - Cadastrar Aluno\n");
+        printf("2  - Cadastrar Matéria\n");
+        printf("3  - Cadastrar Período\n");
+        printf("4  - Remover Período\n");
+        printf("5  - Remover Matéria\n");
+        printf("6  - Remover Aluno\n");
+        printf("7  - Mostrar Alunos\n");
+        printf("8  - Mostrar Materias\n");
+        printf("9  - Mostrar Periodos\n");        
+        printf("10 - Acessar Periodo\n");
         printf("0 - Sair\n");
-
         printf("Escolha uma opção: ");
         scanf("%d", &opcao);
 
@@ -45,6 +47,15 @@ int main() {
                 removerAluno(&alunos, &periodos);
                 break;
             case 7:
+                showAlunos(&alunos);
+                break;
+            case 8:
+                showDiscs(&discs);
+                break;
+            case 9:
+                showPeriodos(&periodos);
+                break;
+            case 10:
                 if(!periodos) {
                     printf("Nenhum Periodo Cadastrado\n");
                     break;
@@ -65,6 +76,8 @@ int main() {
                         printf("2 - Cadastrar Aluno em Matéria\n");
                         printf("3 - Remover Aluno de Matéria\n");
                         printf("4 - Remover Matéria de Período\n");
+                        printf("5 - Mostar Materias\n");
+                        printf("4 - Remover Matéria de Período\n");
                         printf("0 - Sair p/ Menu Principal\n");
 
                         printf("Escolha uma opção: ");
@@ -82,6 +95,9 @@ int main() {
                                 break;
                             case 4:
                                 removerMateriadePeriodo(&periodos);
+                                break;
+                            case 5:
+                                showDiscs(&(periodos->discList));
                                 break;
                             case 0:
                                 printf("Saindo para Menu Principal.\n");

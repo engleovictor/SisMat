@@ -1,9 +1,8 @@
 # SisMat
 
 ## Not Completed!!
- - procurarPorAluno()
- - procurarPorMateria()
- - There are some commented lines where we should "Verificar se é possível".
+
+Still missing Search functions.
 
 ## Compiler
 

@@ -15,5 +15,6 @@ int mostrarAlunoseMaterias(LEA **alunoHead, LED **discHead);
 int mostrarMateriasdeAluno(LEA **alunoHead);
 int mostrarAlunosdeMateria(LED **discHead);
 int possiveisPeriodosAluno(LEA **endHead);
+int possiveisPeriodosMateria(LED **endHead);
 
 #endif /* SISMAT_H */

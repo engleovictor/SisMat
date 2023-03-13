@@ -1,6 +1,6 @@
 # !/bin/bash
 
-mkdir LEAfiles LEDfiles
+mkdir -p  LEAfiles LEDfiles
 
 gcc src/Aluno.c -o Aluno.o -c
 gcc src/Disc.c -o Disc.o -c

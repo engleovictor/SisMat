@@ -18,6 +18,12 @@ configure:
     $ bash config.sh          # FOR LINUX
 
     $ powershell config.ps1   # FOR WINDOWS
+
+recompile:
+
+    $ bash rec.sh             # FOR LINUX
+
+    $ powershell rec.ps1      # FOR WINDOWS
     
 Finally:
 

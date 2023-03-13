@@ -1,6 +1,4 @@
 
-mkdir LEAfiles LEDfiles
-
 gcc src/Aluno.c -o Aluno.o -c
 gcc src/Disc.c -o Disc.o -c
 gcc src/ListEnc.c -o ListEnc.o -c

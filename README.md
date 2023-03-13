@@ -1,8 +1,7 @@
 # SisMat
 
 ## Not Completed!!
-
-Still missing Search functions.
+ - Remake menu (Sakai).
 
 ## Compiler
 
@@ -14,17 +13,12 @@ First clone SisMat Repo.
 
     $ git clone https://github.com/engleovictor/SisMat
 
-Then:
+configure:
 
-    $ cd SisMat
+    $ bash config.sh          # FOR LINUX
 
-
-compile:
-
-    $ bash autoc.sh           # for Linux;
-
-    > powershell autoc.ps1    # for Windows; 
+    $ powershell config.ps1   # FOR WINDOWS
     
 Finally:
 
-    $ ./SisMatProgram
+    $ ./SisMatprogram

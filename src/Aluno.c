@@ -4,11 +4,12 @@
 
 #include "../include/Aluno.h"
 
-Aluno *newAluno(int numero, char *nome, char *cpf, Aluno *prev) {
+Aluno *newAluno(int numero, char *nome, char *cpf, char *periodo,Aluno *prev) {
     Aluno *new = (Aluno *) malloc(sizeof(Aluno));
     new->numero = numero;
     strcpy(new->nome,nome);
     strcpy(new->cpf,cpf);
+    strcpy(new->periodo,periodo);
     new->prev = prev;
     new->next = NULL;
     if(!prev) new->index = 0;
@@ -22,9 +23,9 @@ Aluno *newAluno(int numero, char *nome, char *cpf, Aluno *prev) {
 void removeAlunobyIndex(Aluno **endHead, int index) {
     Aluno *iter = (*endHead);
     if((*endHead)->index == index && index != 0) {
-        (*endHead) = (*endHead)->prev; 
-        (*endHead)->next = NULL; 
-        free(iter); 
+        (*endHead) = (*endHead)->prev;
+        (*endHead)->next = NULL;
+        free(iter);
         return ;
     }
     while(iter->index != index) iter = iter->prev; 
@@ -41,6 +42,23 @@ void removeAlunobyIndex(Aluno **endHead, int index) {
     }
     iter = NULL;
     free(iter);
+}
+
+void removeAlunobyCPF(Aluno **endHead, char *cpf) {
+    if(*endHead) {
+        Aluno *iter = (*endHead);
+        while(strcmp(iter->cpf,cpf)!=0) if(iter->prev) iter = iter->prev;
+        else {
+            iter = NULL;
+            free(iter);
+            return ;
+        }
+        removeAlunobyIndex(endHead,iter->index);
+        iter = NULL;
+        free(iter);
+    } else {
+        return ;
+    }
 }
 
 void showAlunos(Aluno **endHead) {
@@ -70,9 +88,10 @@ Aluno *loadAlunosFromText(char *filename) {
         int numero;
         char nome[100];
         char cpf[12];
+        char periodo[7];
         for(int i=0;i<tam;i++) {
-            fscanf(fptr,"%d\n%[^\n]\n%[^\n]",&numero,nome,cpf);
-            newDiscs = newAluno(numero,nome,cpf,newDiscs);
+            fscanf(fptr,"%d\n%[^\n]\n%[^\n]\n%[^\n]\n",&numero,nome,cpf,periodo);
+            newDiscs = newAluno(numero,nome,cpf,periodo,newDiscs);
         }
         return newDiscs;
     }
@@ -88,7 +107,7 @@ void saveAlunoInFile(Aluno **endHead, char *filename) {
             fprintf(fptr,"%d\n",tam);
             while(iter->prev) iter = iter->prev;
             for(int i=0;i<tam;i++) {
-                fprintf(fptr,"%d\n%s\n%s\n",iter->numero,iter->nome,iter->cpf);
+                fprintf(fptr,"%d\n%s\n%s\n%s\n",iter->numero,iter->nome,iter->cpf,iter->periodo);
                 iter = iter->next;
             }
             iter = NULL;
@@ -99,22 +118,5 @@ void saveAlunoInFile(Aluno **endHead, char *filename) {
     } else {
         printf("ERRO AO SALVAR!! SAINDO...\n");
         exit(1);
-    }
-}
-
-void removeAlunobyCPF(Aluno **endHead, char *cpf) {
-    if(*endHead) {
-        Aluno *iter = (*endHead);
-        while(strcmp(iter->cpf,cpf)!=0) if(iter->prev) iter = iter->prev;
-        else {
-            iter = NULL;
-            free(iter);
-            return ;
-        }
-        removeAlunobyIndex(endHead,iter->index);
-        iter = NULL;
-        free(iter);
-    } else {
-        return ;
     }
 }

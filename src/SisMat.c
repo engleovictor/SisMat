@@ -4,7 +4,7 @@
 
 #include "../include/SisMat.h"
 
-int cadastrarAluno(Aluno **endHead) {
+int cadastrarAluno(LEA **endHead) {
     int numero;
     char nome[100], cpf[12];
     printf("Digite seu Numero: ");
@@ -15,13 +15,19 @@ int cadastrarAluno(Aluno **endHead) {
     printf("Digite seu CPF: ");
     scanf("%s", cpf);
 
-    Aluno *iter = *endHead;
+    LEA *iter = *endHead;
+    
     
     if(iter) {
+        int tam = iter->index + 1;
         
-        int tam = iter->index + 1; 
-         
-        for(int i=0;i<tam;i++) {  
+        if(strcmp(iter->cpf,cpf) == 0) {
+            iter = NULL;
+            free(iter);
+            return 1;
+        }
+        
+        for(int i=0;i<tam;i++) {
             if(strcmp(iter->cpf,cpf) == 0) {
                 iter = NULL;
                 free(iter);
@@ -34,12 +40,12 @@ int cadastrarAluno(Aluno **endHead) {
     iter = NULL;
     free(iter);
 
-    *endHead = newAluno(numero,nome,cpf,*endHead);
+    *endHead = newLEA(numero,nome,cpf,*endHead);
 
     return 0;
 }
 
-int cadastrarMateria(Disc **endHead) {
+int cadastrarMateria(LED **endHead) {
     int numero, creditos;
     char nome[100], prof[100];
     printf("Digite seu Numero: ");
@@ -53,10 +59,16 @@ int cadastrarMateria(Disc **endHead) {
     printf("Digite os Creditos: ");
     scanf("%d", &creditos);
 
-    Disc *iter = *endHead;
+    LED *iter = *endHead;
 
     if(iter) {
         int tam = iter->index + 1;
+        
+        if(strcmp(iter->prof,prof) == 0) {
+            iter = NULL;
+            free(iter);
+            return 1;
+        }
         
         for(int i=0;i<tam;i++) {
             if(strcmp(iter->prof,prof) == 0) {
@@ -71,160 +83,421 @@ int cadastrarMateria(Disc **endHead) {
     iter = NULL;
     free(iter);
 
-    *endHead = newDisc(numero,nome,prof,creditos,*endHead);
+    *endHead = newLED(numero,nome,prof,creditos,*endHead);
 
     return 0;
 }
 
-int cadastrarPeriodo(Periodo **endHead) {
-    char data[7];
-    getchar();
-    printf("Digite Periodo: ");
-    scanf("%[^\n]", data);
+int cadastrarAlunoEmMateria(LEA **alunoHead, LED **discHead) {
+    int opt;
+    showLEAs(alunoHead);
+    LEA *iter0 = *alunoHead;
+    printf("Escolha o Aluno por index: ");
+    scanf("%d",&opt);
+    //
+    int max_index = iter0->index;
+    if(opt > max_index) {
+        iter0 = NULL;
+        free(iter0);
+        return 1;
+    }
+    //
+    while(iter0->index != opt) iter0 = iter0->prev;
 
-    Periodo *iter = *endHead;
+    showLEDs(discHead);
+    LED *iter1 = *discHead;
+    printf("Escolha a Materia por index: ");
+    scanf("%d",&opt);
+    //
+    max_index = iter1->index;
+    if(opt > max_index) {
+        iter1 = NULL;
+        iter0 = NULL;
+        free(iter0);
+        free(iter1);
+        return 2;    
+    }
+    //
+    while(iter1->index != opt) iter1 = iter1->prev;
 
+    Aluno *iter = iter1->alunoList;
     if(iter) {
         int tam = iter->index + 1;
-        
+        if(strcmp(iter->cpf,iter0->cpf) == 0) {
+            iter = NULL;
+            iter0 = NULL;
+            iter1 = NULL;
+            free(iter);
+            free(iter0);
+            free(iter1);
+            return 3;
+        }
         for(int i=0;i<tam;i++) {
-            if(strcmp(iter->data,data) == 0) {
+            if(strcmp(iter->cpf,iter0->cpf) == 0) {
                 iter = NULL;
+                iter0 = NULL;
+                iter1 = NULL;
                 free(iter);
-                return 1;
+                free(iter0);
+                free(iter1);
+                return 3;
             }
             iter = iter->prev;
         }
     }
+    
+    char periodo[7];
+    printf("Digite o Periodo: ");
+    scanf("%s",periodo);
 
+    iter1->alunoList = newAluno(iter0->numero,iter0->nome,iter0->cpf,periodo,iter1->alunoList);
+    iter0->discList  = newDisc(iter1->numero,iter1->nome,iter1->prof,iter1->creditos,periodo,iter0->discList);
+    iter0 = NULL;
+    iter1 = NULL;
+    free(iter0);
+    free(iter1);
+
+    return 0;
+}
+
+int removerAlunoDeMateria(LED **discHead, LEA **alunoHead) {
+    showLEDs(discHead);
+    printf("Escolha o Index da Materia da qual gostaria de remover o Aluno: ");
+    int opt;
+    scanf("%d",&opt);
+    LED *iter = *discHead;
+    //
+    int max_index = iter->index;
+    if(opt > max_index) {
+        iter = NULL;
+        free(iter);
+        return 1;
+    }
+    //
+    while(iter->index != opt) iter = iter->prev;
+    showAlunos(&(iter->alunoList));
+    printf("Escolha o Index do Aluno que deseja remover dessa materia: ");
+    scanf("%d",&opt);
+    
+    Aluno *aluno = iter->alunoList;
+    //
+    max_index = aluno->index;
+    if(opt > max_index) {
+        iter = NULL;
+        aluno = NULL;
+        free(aluno);
+        free(iter);
+        return 2;
+    }
+    //
+    while(aluno->index != opt) aluno = aluno->prev;
+    LEA *iterAluno = *alunoHead;
+    while(strcmp(iterAluno->cpf,aluno->cpf)!=0) iterAluno = iterAluno->prev;
+
+    removeDiscbyDiscName(&(iterAluno->discList),iter->nome);
+
+    removeAlunobyIndex(&(iter->alunoList),opt);
+    
+    aluno = NULL;
+    free(aluno);
+    iterAluno = NULL;
+    free(iterAluno);
     iter = NULL;
     free(iter);
 
-    *endHead = newPeriodo(data,*endHead);
+    return 0;
+}
+
+int removerAluno(LEA **alunoHead, LED **discHead) {
+    showLEAs(alunoHead);
+    printf("Escolha o Aluno que deseja remover por Index: ");
+    int opt;
+    LEA *iter = *alunoHead;
+
+    if(!iter) {
+        free(iter);
+        return 1;
+    }
+
+    scanf("%d",&opt);
+    //
+    int max_index = iter->index;
+    if(opt > max_index) {
+        iter = NULL;
+        free(iter);
+        return 2;
+    }
+    // 
+    while(iter->index != opt) iter = iter->prev;
+    int removeableIndex = iter->index;
+    //
+    char filename[24] = "LEAfiles/LEA";
+    strcat(filename,iter->cpf);
+    int rmst = remove(filename);
+    // 
+    LED *iterDisc = *discHead;
+    if(iterDisc) {
+        int tam = iterDisc->index + 1;
+        for(int i=0;i<tam;i++) {
+            removeAlunobyCPF(&(iterDisc->alunoList),iter->cpf);
+            iterDisc = iterDisc->prev;
+        }
+    }
+
+    removeLEAbyIndex(alunoHead, removeableIndex);
+    iterDisc = NULL;
+    free(iterDisc);
+    iter = NULL;
+    free(iter);
 
     return 0;
 }
 
-int cadastrarMateriaemPeriodo(Disc **discHead, Periodo **periodoHead) {
-    if(!((*periodoHead)&&(*discHead))) return 1;
+int removerMateria(LED **discHead, LEA **alunoHead) {
+    showLEDs(discHead);
+    printf("Escolha a Materia que deseja remover por Index: ");
     int opt;
-    Periodo *iterPeriodo = *periodoHead;
-    showDiscs(discHead);
-    printf("Escolha o Materia que deseja cadastrar no Periodo: ");
-    scanf("%d",&opt);
-    Disc *iterDisc = *discHead;
-    while(iterDisc->index != opt) iterDisc = iterDisc->prev;
-    iterPeriodo->discList = newDisc(iterDisc->numero,iterDisc->nome,iterDisc->prof,iterDisc->creditos,iterPeriodo->discList);
-    iterDisc = NULL;
-    free(iterDisc);
-    iterPeriodo = NULL;
-    free(iterPeriodo);
-    return 0;
-}
+    LED *iter = *discHead;
+    if(!iter) {
+        free(iter);
+        return 1;
+    }
 
-int cadastrarAlunoemMateria(Aluno **alunoHead, Periodo **periodo) {
-    if(!((*periodo)&&(*alunoHead))) return 1;
-    showAlunos(alunoHead);
-    printf("Escolha o aluno que deseja cadastrar: ");
-    int opt;
+
     scanf("%d",&opt);
-    Aluno *iterAluno = *alunoHead;
-    while(iterAluno->index != opt) iterAluno = iterAluno->prev;
-    showDiscs(&(*periodo)->discList);
-    printf("Escolha a materia que deseja matricula-lo: ");
-    scanf("%d",&opt);
-    Disc *iterDisc = (*periodo)->discList;
-    while(iterDisc->index != opt) iterDisc = iterDisc->prev;
-    iterDisc->alunoList = newAluno(iterAluno->numero,iterAluno->nome,iterAluno->cpf,iterDisc->alunoList);
-    iterDisc = NULL;
-    free(iterDisc);
+    //
+    int max_index = iter->index;
+    if(opt > max_index) {
+        iter = NULL;
+        free(iter);
+        return 2;
+    }
+    // 
+    while(iter->index != opt) iter = iter->prev;
+    int removeableIndex = iter->index;
+    //
+    char filename[104] = "LEDfiles/LED";
+    strcat(filename,iter->nome);
+    remove(filename);
+    //
+    LEA *iterAluno = *alunoHead;
+    if(iterAluno) {
+        int tam = iterAluno->index + 1;
+        for(int i=0;i<tam;i++) {
+            removeDiscbyDiscName(&(iterAluno->discList),iter->nome);
+            iterAluno = iterAluno->prev;
+        }
+    }
+    removeLEDbyIndex(discHead, removeableIndex);
     iterAluno = NULL;
     free(iterAluno);
+    iter = NULL;
+    free(iter);
+    
     return 0;
 }
 
-int removerAlunoDeMateria(Periodo **periodo) {
-    Disc *iterDisc = (*periodo)->discList;
-    if(!iterDisc) return 1;
-    showDiscs(&iterDisc);
-    printf("Escolha a Materia da Qual deseja remover aluno: ");
+int AlunoEmPeriodo(LEA **endHead) {
+    LEA *iter = *endHead;
+    if(!iter) return 1;
     int opt;
-    scanf("%d", &opt);
-    while(iterDisc->index != opt) iterDisc = iterDisc->prev;
-    if(!(iterDisc->alunoList)) return 1;
-    showAlunos(&(iterDisc->alunoList));
-    printf("Escolha qual aluno remover: ");
+    char periodo[7];
+    showLEAs(&iter);
+    printf("Escolha o Aluno que quer ver o Periodo: ");
     scanf("%d",&opt);
-    removeAlunobyIndex(&(iterDisc->alunoList),opt);
+    while(iter->index != opt) iter = iter->prev;
+    if(possiveisPeriodosAluno(&iter) == 1) {
+        printf("Nenhuma disciplina cadastrada para este aluno\n"); 
+        return 3;
+    }
+    else printf("Escolha o periodo que deseja: ");
+    scanf("%s",periodo);
+    Disc *iterDisc = iter->discList;
+    if(!iterDisc) return 2;
+
+    int jaPrinteiHeader = 0;
+
+    if(strcmp(iterDisc->periodo,periodo) == 0) {
+        printf("%5s %6s %50s %50s %8s\n","INDEX","NUMERO", "NOME", "PROF", "CREDITOS");
+        printf("%5d %6d %50s %50s %8d\n",iterDisc->index,iterDisc->numero,iterDisc->nome, iterDisc->prof,iterDisc->creditos);
+        jaPrinteiHeader = 1;
+    }
+    if(iterDisc->prev) iterDisc = iterDisc->prev;
+    
+    while(iterDisc->prev) {
+        if(strcmp(iterDisc->periodo,periodo) == 0)  {
+            if(!jaPrinteiHeader) { 
+                printf("%5s %6s %50s %50s %8s\n","INDEX","NUMERO", "NOME", "PROF", "CREDITOS");
+                jaPrinteiHeader = 1; 
+            }
+            printf("%5d %6d %50s %50s %8d\n",iterDisc->index,iterDisc->numero,iterDisc->nome, iterDisc->prof,iterDisc->creditos);
+        }
+        iterDisc = iterDisc->prev;
+    }
+
     iterDisc = NULL;
     free(iterDisc);
+    iter = NULL;
+    free(iter);
     return 0;
 }
 
-int removerMateriadePeriodo(Periodo **periodo) {
-    if(!((*periodo)->discList)) return 1;
-    showDiscs(&((*periodo)->discList));
-    printf("Escolha a Materia para remover: ");
+int MateriaEmPeriodo(LED **endHead) {
+    LED *iter = *endHead;
+    if(!iter) return 1;
     int opt;
+    char periodo[7];
+    showLEDs(&iter);
+    printf("Escolha a Materia que quer ver o Periodo: ");
     scanf("%d",&opt);
-    removeDiscbyIndex(&((*periodo)->discList),opt);
-    return 0;
-}
-
-int removerPeriodo(Periodo **periodos) {
-    showPeriodos(periodos);
-    printf("Escolha qual periodo deseja Remover: ");
-    int opt;
-    scanf("%d", &opt);
-    removePeriodobyIndex(periodos,opt);
-    return 0;
-}
-
-int removerMateria(Disc **discHead, Periodo **periodoHead) {
-    if(!(*discHead)) return 1;
-    showDiscs(discHead);
-    printf("Escolha a materia que deseja remover: ");
-    int opt;
-    scanf("%d", &opt);
-    if(*periodoHead) {
-        Disc *iterDisc = *discHead;
-        while(iterDisc->index != opt) iterDisc = iterDisc->prev;
-        Periodo *iterPeriodo = *periodoHead;
-        while(iterPeriodo->prev) {
-            removeDiscbyDiscName(&(iterPeriodo->discList),iterDisc->nome);
-            iterPeriodo = iterPeriodo->prev;
-        }
-        removeDiscbyDiscName(&(iterPeriodo->discList),iterDisc->nome);
+    while(iter->index != opt) iter = iter->prev;
+    if(possiveisPeriodosMateria(&iter) == 1) {
+        printf("Nenhum aluno cadastrada para esta disciplina\n");
+        return 3;
     }
-    removeDiscbyIndex(discHead,opt);
-    return 0;
-}
+    else printf("Escolha o periodo que deseja: ");
+    scanf("%s",periodo);
+    Aluno *iterAluno = iter->alunoList;
+    if(!iterAluno) return 2;
 
-int removerAluno(Aluno **alunoHead, Periodo **periodoHead) {
-    if(!(*alunoHead)) return 1;
-    showAlunos(alunoHead);
-    printf("Escolha o Aluno que deseja remover: ");
-    int opt;
-    scanf("%d", &opt);
-    Aluno *iterAluno = *alunoHead;
-    while(iterAluno->index != opt) iterAluno = iterAluno->prev;
-    if (*periodoHead) {
-        while((*periodoHead)->prev) {
-            
-            while((*periodoHead)->discList->prev) {
-                removeAlunobyCPF(&((*periodoHead)->discList->alunoList),iterAluno->cpf);
-                (*periodoHead)->discList = (*periodoHead)->discList->prev;
+    int jaPrinteiHeader = 0;
+
+    if(strcmp(iterAluno->periodo,periodo) == 0) {
+        printf("%5s %6s %50s %11s\n","INDEX","NUMERO", "NOME", "CPF");
+        printf("%5d %6d %50s %11s\n",iterAluno->index,iterAluno->numero,iterAluno->nome, iterAluno->cpf);
+        jaPrinteiHeader = 1;
+    }
+    if(iterAluno->prev) iterAluno = iterAluno->prev;
+    
+    while(iterAluno->prev) {
+        if(strcmp(iterAluno->periodo,periodo) == 0)  {
+            if(!jaPrinteiHeader) { 
+                printf("%5s %6s %50s %11s\n","INDEX","NUMERO", "NOME", "CPF");
+                jaPrinteiHeader = 1; 
             }
-            removeAlunobyCPF(&((*periodoHead)->discList->alunoList),iterAluno->cpf);
+            printf("%5d %6d %50s %11s\n",iterAluno->index,iterAluno->numero,iterAluno->nome, iterAluno->cpf);
         }
-
-        while((*periodoHead)->discList->prev) {
-            removeAlunobyCPF(&((*periodoHead)->discList->alunoList),iterAluno->cpf);
-            (*periodoHead)->discList = (*periodoHead)->discList->prev;
-        }
-        removeAlunobyCPF(&((*periodoHead)->discList->alunoList),iterAluno->cpf);
-        while((*periodoHead)->next) (*periodoHead) = (*periodoHead)->next;
+        iterAluno = iterAluno->prev;
     }
-    removeAlunobyIndex(alunoHead,opt);
+
+    iterAluno = NULL;
+    free(iterAluno);
+    iter = NULL;
+    free(iter);
+    return 0;
+}
+
+int mostrarAlunoseMaterias(LEA **alunoHead, LED **discHead) {
+    showLEAs(alunoHead);
+    showLEDs(discHead);
+    return 0;
+}
+
+int mostrarMateriasdeAluno(LEA **alunoHead) {
+    showLEAs(alunoHead);
+    int opt;
+    printf("Escolha por Index: ");
+    scanf("%d", &opt);
+    LEA *iter = *alunoHead;
+    //
+    int max_index = iter->index;
+    if(opt > max_index) {
+        iter = NULL;
+        free(iter);
+        return 1;
+    }
+    //
+
+    while(iter->index != opt) iter = iter->prev;
+    showDiscs(&(iter->discList));
+    iter = NULL;
+    free(iter);
+
+    return 0;
+}
+
+int mostrarAlunosdeMateria(LED **discHead) {
+    showLEDs(discHead);
+    int opt;
+    printf("Escolha por Index: ");
+    scanf("%d", &opt);
+    LED *iter = *discHead;
+    //
+    int max_index = iter->index;
+    if(opt > max_index) {
+        iter = NULL;
+        free(iter);
+        return 1;
+    }
+    //
+    while(iter->index != opt) iter = iter->prev;
+    showAlunos(&(iter->alunoList));
+    iter = NULL;
+    free(iter);
+
+    return 0;
+}
+
+int possiveisPeriodosAluno(LEA **endHead) {
+    Disc *iter = (*endHead)->discList;
+    if(!iter) return 1;
+    int tam = iter->index+1;
+    char periodos[tam][8];
+    int tp = 0;
+    for(int i = 0; i < tam; i++){
+        if(!tp){
+            strcpy(periodos[tp],iter->periodo);
+            tp++;
+        }
+        else{
+            for(int j = 0; j < tp; j++){
+                if(strcmp(periodos[j],iter->periodo) == 0){
+                    break;
+                }
+                else{
+                    strcpy(periodos[tp],iter->periodo);
+                    tp++;
+                    break;
+                }
+            }
+        }
+    }
+    if(tp) printf("Periodos:\n");
+    for(int i = 0;i < tp; i++){
+        printf("%s\n", periodos[i]);
+    }
+    printf("\n");
+    return 0;
+}
+
+int possiveisPeriodosMateria(LED **endHead) {
+    Aluno *iter = (*endHead)->alunoList;
+    if(!iter) return 1;
+    int tam = iter->index+1;
+    char periodos[tam][8];
+    int tp = 0;
+    for(int i = 0; i < tam; i++){
+        if(!tp){
+            strcpy(periodos[tp],iter->periodo);
+            tp++;
+        }
+        else{
+            for(int j = 0; j < tp; j++){
+                if(strcmp(periodos[j],iter->periodo) == 0){
+                    break;
+                }
+                else{
+                    strcpy(periodos[tp],iter->periodo);
+                    tp++;
+                    break;
+                }
+            }
+        }
+    }
+    if(tp) printf("Periodos:\n");
+    for(int i = 0;i < tp; i++){
+        printf("%s\n", periodos[i]);
+    }
+    printf("\n");
     return 0;
 }

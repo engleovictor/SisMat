@@ -2,15 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../include/Aluno.h"
 #include "../include/Disc.h"
 
-Disc *newDisc(int numero, char *nome, char *prof, int creditos, Disc *prev) {
+Disc *newDisc(int numero, char *nome, char *prof, int creditos, char *periodo,Disc *prev) {
     Disc *new = (Disc *) malloc(sizeof(Disc));
     new->numero = numero;
     new->creditos = creditos;
     strcpy(new->nome,nome);
     strcpy(new->prof,prof);
+    strcpy(new->periodo,periodo);
     new->prev = prev;
     new->next = NULL;
     if(!prev) new->index = 0;
@@ -18,9 +18,6 @@ Disc *newDisc(int numero, char *nome, char *prof, int creditos, Disc *prev) {
         new->index = prev->index + 1;
         prev->next = new;    
     }
-
-    new->alunoList = NULL;
-    
     return new;
 }
 
@@ -46,6 +43,25 @@ void removeDiscbyIndex(Disc **endHead, int index) {
     }
     iter = NULL;
     free(iter);
+}
+
+void removeDiscbyDiscName(Disc **endHead, char *nome) {
+    if(*endHead) {
+        Disc *iter = (*endHead);
+        while(strcmp(iter->nome,nome)!=0) {
+            if(iter->prev) iter = iter->prev;
+            else {
+                iter = NULL;
+                free(iter);
+                return ;
+            }
+        }
+        removeDiscbyIndex(endHead,iter->index);
+        iter = NULL;
+        free(iter);
+    } else {
+        return ;
+    }
 }
 
 void showDiscs(Disc **endHead) {
@@ -76,10 +92,11 @@ Disc *loadDiscsFromText(char *filename) {
         int numero;
         char nome[100];
         char prof[100];
+        char periodo[7];
         int creditos;
         for(int i=0;i<tam;i++) {
-            fscanf(fptr,"%d\n%[^\n]\n%[^\n]\n%d",&numero,nome,prof,&creditos);
-            newAlunos = newDisc(numero,nome,prof,creditos,newAlunos);
+            fscanf(fptr,"%d\n%[^\n]\n%[^\n]\n%d\n%[^\n]\n",&numero,nome,prof,&creditos,periodo);
+            newAlunos = newDisc(numero,nome,prof,creditos,periodo,newAlunos);
         }
         return newAlunos;
     }
@@ -95,7 +112,7 @@ void saveDiscInFile(Disc **endHead, char *filename) {
             fprintf(fptr,"%d\n",tam);
             while(iter->prev) iter = iter->prev;
             for(int i=0;i<tam;i++) {
-                fprintf(fptr,"%d\n%s\n%s\n%d\n",iter->numero,iter->nome,iter->prof,iter->creditos);
+                fprintf(fptr,"%d\n%s\n%s\n%d\n%s\n",iter->numero,iter->nome,iter->prof,iter->creditos,iter->periodo);
                 iter = iter->next;
             }
             iter = NULL;
@@ -106,24 +123,5 @@ void saveDiscInFile(Disc **endHead, char *filename) {
     } else {
         printf("ERRO AO SALVAR!! SAINDO...\n");
         exit(1);
-    }
-}
-
-void removeDiscbyDiscName(Disc **endHead, char *nome) {
-    if(*endHead) {
-        Disc *iter = (*endHead);
-        while(strcmp(iter->nome,nome)!=0) {
-            if(iter->prev) iter = iter->prev;
-            else {
-                iter = NULL;
-                free(iter);
-                return ;
-            }
-        }
-        removeDiscbyIndex(endHead,iter->index);
-        iter = NULL;
-        free(iter);
-    } else {
-        return ;
     }
 }

@@ -322,9 +322,9 @@ int AlunoEmPeriodo(LEA **endHead) {
         printf("%5d %6d %50s %50s %8d\n",iterDisc->index,iterDisc->numero,iterDisc->nome, iterDisc->prof,iterDisc->creditos);
         jaPrinteiHeader = 1;
     }
-    if(iterDisc->prev) iterDisc = iterDisc->prev;
-    
+        
     while(iterDisc->prev) {
+        iterDisc = iterDisc->prev;
         if(strcmp(iterDisc->periodo,periodo) == 0)  {
             if(!jaPrinteiHeader) { 
                 printf("%5s %6s %50s %50s %8s\n","INDEX","NUMERO", "NOME", "PROF", "CREDITOS");
@@ -332,7 +332,6 @@ int AlunoEmPeriodo(LEA **endHead) {
             }
             printf("%5d %6d %50s %50s %8d\n",iterDisc->index,iterDisc->numero,iterDisc->nome, iterDisc->prof,iterDisc->creditos);
         }
-        iterDisc = iterDisc->prev;
     }
 
     iterDisc = NULL;
@@ -367,9 +366,9 @@ int MateriaEmPeriodo(LED **endHead) {
         printf("%5d %6d %50s %11s\n",iterAluno->index,iterAluno->numero,iterAluno->nome, iterAluno->cpf);
         jaPrinteiHeader = 1;
     }
-    if(iterAluno->prev) iterAluno = iterAluno->prev;
     
     while(iterAluno->prev) {
+        iterAluno = iterAluno->prev;
         if(strcmp(iterAluno->periodo,periodo) == 0)  {
             if(!jaPrinteiHeader) { 
                 printf("%5s %6s %50s %11s\n","INDEX","NUMERO", "NOME", "CPF");
@@ -377,7 +376,6 @@ int MateriaEmPeriodo(LED **endHead) {
             }
             printf("%5d %6d %50s %11s\n",iterAluno->index,iterAluno->numero,iterAluno->nome, iterAluno->cpf);
         }
-        iterAluno = iterAluno->prev;
     }
 
     iterAluno = NULL;
@@ -445,7 +443,7 @@ int possiveisPeriodosAluno(LEA **endHead) {
     char periodos[tam][8];
     int tp = 0;
     for(int i = 0; i < tam; i++){
-        if(!tp){
+        if(tp == 0){
             strcpy(periodos[tp],iter->periodo);
             tp++;
         }
@@ -453,20 +451,19 @@ int possiveisPeriodosAluno(LEA **endHead) {
             for(int j = 0; j < tp; j++){
                 if(strcmp(periodos[j],iter->periodo) == 0){
                     break;
-                }
-                else{
+                } 
+                if(j == tp-1) {
                     strcpy(periodos[tp],iter->periodo);
                     tp++;
-                    break;
-                }
+                }            
             }
         }
+        iter = iter->prev;
     }
+    iter = NULL;
+    free(iter);
     if(tp) printf("Periodos:\n");
-    for(int i = 0;i < tp; i++){
-        printf("%s\n", periodos[i]);
-    }
-    printf("\n");
+    for(int i = 0;i < tp; i++) printf("%s\n", periodos[i]);
     return 0;
 }
 
@@ -477,7 +474,7 @@ int possiveisPeriodosMateria(LED **endHead) {
     char periodos[tam][8];
     int tp = 0;
     for(int i = 0; i < tam; i++){
-        if(!tp){
+        if(tp == 0){
             strcpy(periodos[tp],iter->periodo);
             tp++;
         }
@@ -485,19 +482,17 @@ int possiveisPeriodosMateria(LED **endHead) {
             for(int j = 0; j < tp; j++){
                 if(strcmp(periodos[j],iter->periodo) == 0){
                     break;
-                }
-                else{
+                } 
+                if(j == tp-1) {
                     strcpy(periodos[tp],iter->periodo);
                     tp++;
-                    break;
                 }
             }
         }
+        iter = iter->prev;
     }
+
     if(tp) printf("Periodos:\n");
-    for(int i = 0;i < tp; i++){
-        printf("%s\n", periodos[i]);
-    }
-    printf("\n");
+    for(int i = 0;i < tp; i++) printf("%s\n", periodos[i]);
     return 0;
 }

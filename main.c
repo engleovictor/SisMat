@@ -4,72 +4,73 @@
 
 #include "./include/SisMat.h"
 
+#define COLOR_RESET "\033[0m"
+#define COLOR_RED "\033[31m"
+#define COLOR_GREEN "\033[32m"
+#define COLOR_YELLOW "\033[33m"
+
 int main() {
     LEA *alunoHead = loadLEAsFromText("LEA.txt");
     LED *discHead  = loadLEDsFromText("LED.txt");
     int opcao;
+    printf(COLOR_YELLOW"Bem-vindo ao sistema de gestao academica!\n"COLOR_RESET);
+    printf(COLOR_RED"Atencao: O programa so salva as alteracoes ao sair\n\n"COLOR_RESET);
     do {
-        printf("Escolha uma opcao:\n");
+        printf(COLOR_YELLOW "Escolha uma opcao:\n" COLOR_RESET); 
         printf("1  - Cadastrar aluno\n");
-        printf("2  - Cadastrar materia\n");
-        printf("3  - Cadastrar aluno em materia\n");
+        printf("2  - Cadastrar disciplina\n");
+        printf("3  - Cadastrar aluno em disciplina\n");
         printf("4  - Remover aluno\n");
-        printf("5  - Remover materia\n");
-        printf("6  - Remover aluno de materia\n");
-        printf("7  - Aluno em Periodo\n");
-        printf("8  - Materia em Periodo\n");
-        printf("9  - Mostrar\n");
-        printf("10 - Mostrar Alunos de uma Materia\n");
-        printf("11 - Mostrar Materias de um Aluno\n");
-        printf("0  - Sair\n");
+        printf("5  - Remover disciplina\n");
+        printf("6  - Remover aluno de disciplina\n");
+        printf("7  - Periodos de alunos\n");
+        printf("8  - Periodos de disciplinas\n");
+        printf("0  - Salvar e Sair\n");
 
         scanf("%d", &opcao);
 
         switch(opcao) {
             case 1:
-                if(cadastrarAluno(&alunoHead) == 1) printf("Aluno Repetido!!");
+                if(!cadastrarAluno(&alunoHead)) printf(COLOR_GREEN "Aluno cadastrado com sucesso!\n" COLOR_RESET);
+                else printf(COLOR_RED "Aluno Repetido!!\n" COLOR_RESET);
                 break;
             case 2:
-                cadastrarMateria(&discHead);
+                if(!cadastrarMateria(&discHead)) printf(COLOR_GREEN "Disciplina cadastrada com sucesso!\n" COLOR_RESET);
                 break;
             case 3:
-                cadastrarAlunoEmMateria(&alunoHead, &discHead);
+                if(!cadastrarAlunoEmMateria(&alunoHead, &discHead)) printf(COLOR_GREEN "Aluno cadastrado em disciplina com sucesso!\n" COLOR_RESET);
                 break;
             case 4:
-                removerAluno(&alunoHead, &discHead);
+                if(!removerAluno(&alunoHead, &discHead)) printf(COLOR_GREEN "Aluno removido com sucesso!\n" COLOR_RESET);
+                else printf(COLOR_RED "Nao ha alunos para remover!\n" COLOR_RESET);
                 break;
             case 5:
-                removerMateria(&discHead, &alunoHead);
+                if(!removerMateria(&discHead, &alunoHead)) printf(COLOR_GREEN "Disciplina removido com sucesso!\n" COLOR_RESET);
+                else printf(COLOR_RED "Nao ha disciplinas para remover!\n" COLOR_RESET);
                 break;
             case 6:
-                removerAlunoDeMateria(&discHead, &alunoHead);
+                if(!removerAlunoDeMateria(&discHead, &alunoHead)) printf(COLOR_GREEN "Aluno removido da disciplina com sucesso!\n" COLOR_RESET);
                 break;
             case 7:
-                AlunoEmPeriodo(&alunoHead);
+                if(!AlunoEmPeriodo(&alunoHead)) printf(COLOR_RED "Nao ha alunos para mostrar!\n" COLOR_RESET);
                 break;
             case 8:
-                MateriaEmPeriodo(&discHead);
-                break;
-            case 9:
-                mostrarAlunoseMaterias(&alunoHead, &discHead);
-                break;
-            case 10:
-                mostrarAlunosdeMateria(&discHead);
-                break;
-            case 11:
-                mostrarMateriasdeAluno(&alunoHead);
+                if(!MateriaEmPeriodo(&discHead)) printf(COLOR_RED "Nao ha disciplinas para mostrar!\n" COLOR_RESET);
                 break;
             case 0:
                 printf("Encerrando o programa.\n");
                 break;
             default:
-                printf("Opcao invalida. Tente novamente.\n");
+                printf(COLOR_RED "Opção invalida. Tente novamente.\n" COLOR_RESET);
                 break;
         }
+        printf("\n");
     } while (opcao != 0);
 
     saveLEAInFile(&alunoHead, "LEA.txt");
     saveLEDInFile(&discHead,  "LED.txt");
 
-    return 0;
+    printf("Sistema encerrado. Obrigado por utilizar!\n");
+
+    return 0; 
 }

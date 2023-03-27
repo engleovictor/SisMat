@@ -1,8 +1,5 @@
 # SisMat
 
-## Not Completed!!
- - Remake menu (Sakai).
-
 ## Compiler
 
 gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0
@@ -13,7 +10,7 @@ First clone SisMat Repo.
 
     $ git clone https://github.com/engleovictor/SisMat
 
-configure:
+configure (You must has a LEAfiles/ and LEDfiles/ directories).
 
     $ bash config.sh          # FOR LINUX
 

@@ -6,6 +6,11 @@
 #include "../include/Disc.h"
 #include "../include/ListEnc.h"
 
+#define COLOR_RESET "\033[0m"
+#define COLOR_RED "\033[31m"
+#define COLOR_GREEN "\033[32m"
+#define COLOR_YELLOW "\033[33m"
+
 LEA *newLEA(int numero, char *nome, char *cpf, LEA *prev) {
     LEA *new = (LEA *) malloc(sizeof(LEA));
     new->numero = numero;
@@ -52,11 +57,11 @@ void removeLEAbyIndex(LEA **endHead, int index) {
 void showLEAs(LEA **endHead) {
     LEA *iter = (*endHead);
     if(iter) {
-        printf("%5s %6s %50s %11s\n","INDEX","NUMERO", "NOME", "CPF");
+        printf("%5s %6s %38s %11s\n",COLOR_YELLOW "INDEX","NUMERO", "NOME", "CPF" COLOR_RESET);
         int tam = iter->index + 1;
         while(iter->prev) iter = iter->prev;
         for(int i=0;i<tam;i++) {
-            printf("%5d %6d %50s %11s\n",iter->index,iter->numero,iter->nome, iter->cpf);
+            printf("%5d %6d %38s %11s\n",iter->index,iter->numero,iter->nome, iter->cpf);
             iter = iter->next;
         }
     } else {
@@ -108,6 +113,8 @@ void saveLEAInFile(LEA **endHead, char *filename) {
         }
     } else {
         printf("ERRO AO SALVAR!! SAINDO...\n");
+        printf("Por favor use config.ps1 ou config.sh\n");
+        remove("LEA.txt");
         exit(1);
     }
 }
@@ -163,11 +170,11 @@ void removeLEDbyIndex(LED **endHead, int index) {
 void showLEDs(LED **endHead) {
     LED *iter = (*endHead);
     if(iter) {
-        printf("%5s %6s %50s %50s %8s\n","INDEX","NUMERO", "NOME", "PROF", "CREDITOS");
+        printf("%5s %6s %38s %50s %8s\n",COLOR_YELLOW "INDEX","NUMERO", "NOME", "PROF", "CREDITOS" COLOR_RESET);
         int tam = iter->index + 1;
         while(iter->prev) iter = iter->prev;
         for(int i=0;i<tam;i++) {
-            printf("%5d %6d %50s %50s %8d\n",iter->index,iter->numero,iter->nome, iter->prof,iter->creditos);
+            printf("%5d %6d %38s %50s %8d\n",iter->index,iter->numero,iter->nome, iter->prof,iter->creditos);
             iter = iter->next;
         }
     } else {
@@ -221,6 +228,8 @@ void saveLEDInFile(LED **endHead, char *filename) {
         }
     } else {
         printf("ERRO AO SALVAR!! SAINDO...\n");
+        printf("Por favor use config.ps1 ou config.sh\n");
+        remove("LED.txt");
         exit(1);
     }
 }

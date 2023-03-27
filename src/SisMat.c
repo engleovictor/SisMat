@@ -4,15 +4,21 @@
 
 #include "../include/SisMat.h"
 
+#define COLOR_RESET "\033[0m"
+#define COLOR_RED "\033[31m"
+#define COLOR_GREEN "\033[32m"
+#define COLOR_YELLOW "\033[33m"
+#define COLOR_CYAN "\033[36m"
+
 int cadastrarAluno(LEA **endHead) {
     int numero;
     char nome[100], cpf[12];
-    printf("Digite seu Numero: ");
+    printf("Numero do aluno: ");
     scanf("%d", &numero);
     getchar();
-    printf("Digite seu Nome: ");
+    printf("Nome do aluno: ");
     scanf(" %[^\n]", nome);
-    printf("Digite seu CPF: ");
+    printf("CPF do aluno (somente numeros): ");
     scanf("%s", cpf);
 
     LEA *iter = *endHead;
@@ -21,14 +27,14 @@ int cadastrarAluno(LEA **endHead) {
     if(iter) {
         int tam = iter->index + 1;
         
-        if(strcmp(iter->cpf,cpf) == 0) {
+        if(strcmp(iter->cpf,cpf) == 0 || iter->numero == numero) {
             iter = NULL;
             free(iter);
             return 1;
         }
         
         for(int i=0;i<tam;i++) {
-            if(strcmp(iter->cpf,cpf) == 0) {
+            if(strcmp(iter->cpf,cpf) == 0 || iter->numero == numero) {
                 iter = NULL;
                 free(iter);
                 return 1;
@@ -48,15 +54,15 @@ int cadastrarAluno(LEA **endHead) {
 int cadastrarMateria(LED **endHead) {
     int numero, creditos;
     char nome[100], prof[100];
-    printf("Digite seu Numero: ");
+    printf("Numero da disciplina: ");
     scanf("%d", &numero);
     getchar();
-    printf("Digite seu Nome: ");
+    printf("Nome da disciplina: ");
     scanf(" %[^\n]", nome);
-    printf("Digite seu Professor: ");
+    printf("Professor: ");
     getchar();
     scanf("%[^\n]", prof);
-    printf("Digite os Creditos: ");
+    printf("Creditos: ");
     scanf("%d", &creditos);
 
     LED *iter = *endHead;
@@ -64,16 +70,18 @@ int cadastrarMateria(LED **endHead) {
     if(iter) {
         int tam = iter->index + 1;
         
-        if(strcmp(iter->prof,prof) == 0) {
+        if(numero == iter->numero) {
             iter = NULL;
             free(iter);
+            printf(COLOR_RED"Materia com mesmo numero ja cadastrada!\n"COLOR_RESET);
             return 1;
         }
         
         for(int i=0;i<tam;i++) {
-            if(strcmp(iter->prof,prof) == 0) {
+            if(numero == iter->numero) {
                 iter = NULL;
                 free(iter);
+                printf(COLOR_RED"Materia com mesmo numero ja cadastrada!\n"COLOR_RESET);
                 return 1;
             }
             iter = iter->prev;
@@ -99,7 +107,8 @@ int cadastrarAlunoEmMateria(LEA **alunoHead, LED **discHead) {
     if(opt > max_index) {
         iter0 = NULL;
         free(iter0);
-        return 1;
+        printf(COLOR_RED"Index nao disponivel!\n"COLOR_RESET);
+        return 1; 
     }
     //
     while(iter0->index != opt) iter0 = iter0->prev;
@@ -115,7 +124,8 @@ int cadastrarAlunoEmMateria(LEA **alunoHead, LED **discHead) {
         iter0 = NULL;
         free(iter0);
         free(iter1);
-        return 2;    
+        printf(COLOR_RED"Index nao disponivel!\n"COLOR_RESET);
+        return 2; 
     }
     //
     while(iter1->index != opt) iter1 = iter1->prev;
@@ -130,7 +140,8 @@ int cadastrarAlunoEmMateria(LEA **alunoHead, LED **discHead) {
             free(iter);
             free(iter0);
             free(iter1);
-            return 3;
+            printf(COLOR_RED"Aluno ja cadastrado\n"COLOR_RESET);
+            return 3; 
         }
         for(int i=0;i<tam;i++) {
             if(strcmp(iter->cpf,iter0->cpf) == 0) {
@@ -140,7 +151,8 @@ int cadastrarAlunoEmMateria(LEA **alunoHead, LED **discHead) {
                 free(iter);
                 free(iter0);
                 free(iter1);
-                return 3;
+                printf(COLOR_RED"Aluno ja cadastrado\n"COLOR_RESET);
+                return 3; 
             }
             iter = iter->prev;
         }
@@ -161,6 +173,8 @@ int cadastrarAlunoEmMateria(LEA **alunoHead, LED **discHead) {
 }
 
 int removerAlunoDeMateria(LED **discHead, LEA **alunoHead) {
+    if(!(*discHead)) return 1; ///////////////////////////// ADICIONAR MENSAGEM DE ERRO DIZENDO NÃO HA MATERIA /////////////////////////////////////////////////
+
     showLEDs(discHead);
     printf("Escolha o Index da Materia da qual gostaria de remover o Aluno: ");
     int opt;
@@ -171,11 +185,14 @@ int removerAlunoDeMateria(LED **discHead, LEA **alunoHead) {
     if(opt > max_index) {
         iter = NULL;
         free(iter);
-        return 1;
+        printf(COLOR_RED"Index nao disponivel!\n"COLOR_RESET);
+        return 2; 
     }
     //
     while(iter->index != opt) iter = iter->prev;
     showAlunos(&(iter->alunoList));
+    if(!(iter->alunoList)) return 3; //////////////////////// ADICIONAR MENSAGEM DE ERRO DIZENDO NÃO HA ALUNO NESSA MATERIA ////////////////////////////////////
+
     printf("Escolha o Index do Aluno que deseja remover dessa materia: ");
     scanf("%d",&opt);
     
@@ -187,7 +204,8 @@ int removerAlunoDeMateria(LED **discHead, LEA **alunoHead) {
         aluno = NULL;
         free(aluno);
         free(iter);
-        return 2;
+        printf(COLOR_RED"Index nao disponivel!\n"COLOR_RESET);
+        return 2; 
     }
     //
     while(aluno->index != opt) aluno = aluno->prev;
@@ -210,7 +228,6 @@ int removerAlunoDeMateria(LED **discHead, LEA **alunoHead) {
 
 int removerAluno(LEA **alunoHead, LED **discHead) {
     showLEAs(alunoHead);
-    printf("Escolha o Aluno que deseja remover por Index: ");
     int opt;
     LEA *iter = *alunoHead;
 
@@ -218,13 +235,14 @@ int removerAluno(LEA **alunoHead, LED **discHead) {
         free(iter);
         return 1;
     }
-
+    printf("Escolha o Aluno que deseja remover por Index: ");
     scanf("%d",&opt);
     //
     int max_index = iter->index;
     if(opt > max_index) {
         iter = NULL;
         free(iter);
+        printf(COLOR_RED"Index nao disponivel!\n"COLOR_RESET);
         return 2;
     }
     // 
@@ -255,13 +273,13 @@ int removerAluno(LEA **alunoHead, LED **discHead) {
 
 int removerMateria(LED **discHead, LEA **alunoHead) {
     showLEDs(discHead);
-    printf("Escolha a Materia que deseja remover por Index: ");
     int opt;
     LED *iter = *discHead;
     if(!iter) {
         free(iter);
-        return 1;
+        return 1; 
     }
+    printf("Escolha a Materia que deseja remover por Index: ");
 
 
     scanf("%d",&opt);
@@ -270,7 +288,8 @@ int removerMateria(LED **discHead, LEA **alunoHead) {
     if(opt > max_index) {
         iter = NULL;
         free(iter);
-        return 2;
+        printf(COLOR_RED"Index nao disponivel!\n"COLOR_RESET);
+        return 2; 
     }
     // 
     while(iter->index != opt) iter = iter->prev;
@@ -303,14 +322,14 @@ int AlunoEmPeriodo(LEA **endHead) {
     int opt;
     char periodo[7];
     showLEAs(&iter);
-    printf("Escolha o Aluno que quer ver o Periodo: ");
+    printf("Escolha o Aluno para ver seus periodos: ");
     scanf("%d",&opt);
     while(iter->index != opt) iter = iter->prev;
     if(possiveisPeriodosAluno(&iter) == 1) {
-        printf("Nenhuma disciplina cadastrada para este aluno\n"); 
-        return 3;
+        printf(COLOR_RED"Nenhuma disciplina cadastrada para este aluno\n"COLOR_RESET); 
+        return 2;
     }
-    else printf("Escolha o periodo que deseja: ");
+    else printf("Escolha o periodo que deseja acessar: ");
     scanf("%s",periodo);
     Disc *iterDisc = iter->discList;
     if(!iterDisc) return 2;
@@ -318,8 +337,9 @@ int AlunoEmPeriodo(LEA **endHead) {
     int jaPrinteiHeader = 0;
 
     if(strcmp(iterDisc->periodo,periodo) == 0) {
-        printf("%5s %6s %50s %50s %8s\n","INDEX","NUMERO", "NOME", "PROF", "CREDITOS");
-        printf("%5d %6d %50s %50s %8d\n",iterDisc->index,iterDisc->numero,iterDisc->nome, iterDisc->prof,iterDisc->creditos);
+        printf(COLOR_CYAN"Discliplinas nesse periodo: \n"COLOR_RESET);
+        printf("%5s %6s %38s %50s %8s\n",COLOR_YELLOW "INDEX","NUMERO", "NOME", "PROF", "CREDITOS" COLOR_RESET);
+        printf("%5d %6d %38s %50s %8d\n",iterDisc->index,iterDisc->numero,iterDisc->nome, iterDisc->prof,iterDisc->creditos);
         jaPrinteiHeader = 1;
     }
         
@@ -327,10 +347,10 @@ int AlunoEmPeriodo(LEA **endHead) {
         iterDisc = iterDisc->prev;
         if(strcmp(iterDisc->periodo,periodo) == 0)  {
             if(!jaPrinteiHeader) { 
-                printf("%5s %6s %50s %50s %8s\n","INDEX","NUMERO", "NOME", "PROF", "CREDITOS");
+                printf("%5s %6s %38s %50s %8s\n",COLOR_YELLOW "INDEX","NUMERO", "NOME", "PROF", "CREDITOS" COLOR_RESET);
                 jaPrinteiHeader = 1; 
             }
-            printf("%5d %6d %50s %50s %8d\n",iterDisc->index,iterDisc->numero,iterDisc->nome, iterDisc->prof,iterDisc->creditos);
+            printf("%5d %6d %38s %50s %8d\n",iterDisc->index,iterDisc->numero,iterDisc->nome, iterDisc->prof,iterDisc->creditos);
         }
     }
 
@@ -347,14 +367,14 @@ int MateriaEmPeriodo(LED **endHead) {
     int opt;
     char periodo[7];
     showLEDs(&iter);
-    printf("Escolha a Materia que quer ver o Periodo: ");
+    printf("Escolha a disciplna para ver seus periodos: ");
     scanf("%d",&opt);
     while(iter->index != opt) iter = iter->prev;
     if(possiveisPeriodosMateria(&iter) == 1) {
-        printf("Nenhum aluno cadastrada para esta disciplina\n");
+        printf(COLOR_RED"Nenhum aluno cadastrado para esta disciplina\n"COLOR_RESET);
         return 3;
     }
-    else printf("Escolha o periodo que deseja: ");
+    else printf("Escolha o periodo que deseja acessar: ");
     scanf("%s",periodo);
     Aluno *iterAluno = iter->alunoList;
     if(!iterAluno) return 2;
@@ -362,8 +382,9 @@ int MateriaEmPeriodo(LED **endHead) {
     int jaPrinteiHeader = 0;
 
     if(strcmp(iterAluno->periodo,periodo) == 0) {
-        printf("%5s %6s %50s %11s\n","INDEX","NUMERO", "NOME", "CPF");
-        printf("%5d %6d %50s %11s\n",iterAluno->index,iterAluno->numero,iterAluno->nome, iterAluno->cpf);
+        printf(COLOR_CYAN"Alunos nesse periodo: \n"COLOR_RESET);
+        printf("%5s %6s %38s %11s\n",COLOR_YELLOW "INDEX","NUMERO", "NOME", "CPF" COLOR_RESET);
+        printf("%5d %6d %38s %11s\n",iterAluno->index,iterAluno->numero,iterAluno->nome, iterAluno->cpf);
         jaPrinteiHeader = 1;
     }
     
@@ -371,10 +392,10 @@ int MateriaEmPeriodo(LED **endHead) {
         iterAluno = iterAluno->prev;
         if(strcmp(iterAluno->periodo,periodo) == 0)  {
             if(!jaPrinteiHeader) { 
-                printf("%5s %6s %50s %11s\n","INDEX","NUMERO", "NOME", "CPF");
+                printf("%5s %6s %38s %11s\n",COLOR_YELLOW "INDEX","NUMERO", "NOME", "CPF" COLOR_RESET);
                 jaPrinteiHeader = 1; 
             }
-            printf("%5d %6d %50s %11s\n",iterAluno->index,iterAluno->numero,iterAluno->nome, iterAluno->cpf);
+            printf("%5d %6d %38s %11s\n",iterAluno->index,iterAluno->numero,iterAluno->nome, iterAluno->cpf);
         }
     }
 
@@ -385,62 +406,11 @@ int MateriaEmPeriodo(LED **endHead) {
     return 0;
 }
 
-int mostrarAlunoseMaterias(LEA **alunoHead, LED **discHead) {
-    showLEAs(alunoHead);
-    showLEDs(discHead);
-    return 0;
-}
-
-int mostrarMateriasdeAluno(LEA **alunoHead) {
-    showLEAs(alunoHead);
-    int opt;
-    printf("Escolha por Index: ");
-    scanf("%d", &opt);
-    LEA *iter = *alunoHead;
-    //
-    int max_index = iter->index;
-    if(opt > max_index) {
-        iter = NULL;
-        free(iter);
-        return 1;
-    }
-    //
-
-    while(iter->index != opt) iter = iter->prev;
-    showDiscs(&(iter->discList));
-    iter = NULL;
-    free(iter);
-
-    return 0;
-}
-
-int mostrarAlunosdeMateria(LED **discHead) {
-    showLEDs(discHead);
-    int opt;
-    printf("Escolha por Index: ");
-    scanf("%d", &opt);
-    LED *iter = *discHead;
-    //
-    int max_index = iter->index;
-    if(opt > max_index) {
-        iter = NULL;
-        free(iter);
-        return 1;
-    }
-    //
-    while(iter->index != opt) iter = iter->prev;
-    showAlunos(&(iter->alunoList));
-    iter = NULL;
-    free(iter);
-
-    return 0;
-}
-
 int possiveisPeriodosAluno(LEA **endHead) {
     Disc *iter = (*endHead)->discList;
     if(!iter) return 1;
     int tam = iter->index+1;
-    char periodos[tam][8];
+    char periodos[100][8];
     int tp = 0;
     for(int i = 0; i < tam; i++){
         if(tp == 0){
@@ -463,7 +433,8 @@ int possiveisPeriodosAluno(LEA **endHead) {
     iter = NULL;
     free(iter);
     if(tp) printf("Periodos:\n");
-    for(int i = 0;i < tp; i++) printf("%s\n", periodos[i]);
+    for(int i = 0;i < tp; i++) printf(COLOR_CYAN "%s\n" COLOR_RESET, periodos[i]);
+    printf("\n");
     return 0;
 }
 
@@ -471,7 +442,7 @@ int possiveisPeriodosMateria(LED **endHead) {
     Aluno *iter = (*endHead)->alunoList;
     if(!iter) return 1;
     int tam = iter->index+1;
-    char periodos[tam][8];
+    char periodos[100][8];
     int tp = 0;
     for(int i = 0; i < tam; i++){
         if(tp == 0){
@@ -493,6 +464,7 @@ int possiveisPeriodosMateria(LED **endHead) {
     }
 
     if(tp) printf("Periodos:\n");
-    for(int i = 0;i < tp; i++) printf("%s\n", periodos[i]);
+    for(int i = 0;i < tp; i++) printf(COLOR_CYAN "%s\n" COLOR_RESET, periodos[i]);
+    printf("\n");
     return 0;
 }

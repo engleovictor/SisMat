@@ -173,7 +173,7 @@ int cadastrarAlunoEmMateria(LEA **alunoHead, LED **discHead) {
 }
 
 int removerAlunoDeMateria(LED **discHead, LEA **alunoHead) {
-    if(!(*discHead)) return 1; ///////////////////////////// ADICIONAR MENSAGEM DE ERRO DIZENDO NÃO HA MATERIA /////////////////////////////////////////////////
+    if(!(*discHead)){printf(COLOR_RED"Nao ha materias cadastradas para esse aluno!\n"COLOR_RESET); return 1;}
 
     showLEDs(discHead);
     printf("Escolha o Index da Materia da qual gostaria de remover o Aluno: ");
@@ -191,7 +191,7 @@ int removerAlunoDeMateria(LED **discHead, LEA **alunoHead) {
     //
     while(iter->index != opt) iter = iter->prev;
     showAlunos(&(iter->alunoList));
-    if(!(iter->alunoList)) return 3; //////////////////////// ADICIONAR MENSAGEM DE ERRO DIZENDO NÃO HA ALUNO NESSA MATERIA ////////////////////////////////////
+    if(!(iter->alunoList)) {printf(COLOR_RED"Nao ha materias cadastradas para esse aluno!\n"COLOR_RESET); return 3;}
 
     printf("Escolha o Index do Aluno que deseja remover dessa materia: ");
     scanf("%d",&opt);

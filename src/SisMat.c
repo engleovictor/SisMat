@@ -173,8 +173,10 @@ int cadastrarAlunoEmMateria(LEA **alunoHead, LED **discHead) {
 }
 
 int removerAlunoDeMateria(LED **discHead, LEA **alunoHead) {
-    if(!(*discHead)){printf(COLOR_RED"Nao ha materias cadastradas para esse aluno!\n"COLOR_RESET); return 1;}
-
+    if(!(*discHead)) {
+        printf(COLOR_RED"Nao ha disciplinas cadastradas!\n"COLOR_RESET);
+        return 1;
+    }
     showLEDs(discHead);
     printf("Escolha o Index da Materia da qual gostaria de remover o Aluno: ");
     int opt;
@@ -191,7 +193,11 @@ int removerAlunoDeMateria(LED **discHead, LEA **alunoHead) {
     //
     while(iter->index != opt) iter = iter->prev;
     showAlunos(&(iter->alunoList));
-    if(!(iter->alunoList)) {printf(COLOR_RED"Nao ha materias cadastradas para esse aluno!\n"COLOR_RESET); return 3;}
+    
+    if(!(iter->alunoList)) {
+        printf(COLOR_RED"Nao ha aluno cadastrados para essa materia!\n"COLOR_RESET);
+        return 3;
+    }
 
     printf("Escolha o Index do Aluno que deseja remover dessa materia: ");
     scanf("%d",&opt);
@@ -319,16 +325,25 @@ int removerMateria(LED **discHead, LEA **alunoHead) {
 int AlunoEmPeriodo(LEA **endHead) {
     LEA *iter = *endHead;
     if(!iter) return 1;
+    int max_index = iter->index;
     int opt;
     char periodo[7];
     showLEAs(&iter);
     printf("Escolha o Aluno para ver seus periodos: ");
     scanf("%d",&opt);
+    if(opt > max_index) {
+        iter = NULL;
+        free(iter);
+        printf(COLOR_RED"Index nao disponivel!\n"COLOR_RESET);
+        return 3;
+    }
+
     while(iter->index != opt) iter = iter->prev;
     if(possiveisPeriodosAluno(&iter) == 1) {
         printf(COLOR_RED"Nenhuma disciplina cadastrada para este aluno\n"COLOR_RESET); 
         return 2;
     }
+    
     else printf("Escolha o periodo que deseja acessar: ");
     scanf("%s",periodo);
     Disc *iterDisc = iter->discList;

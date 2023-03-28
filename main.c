@@ -61,7 +61,7 @@ int main() {
                 printf("Encerrando o programa.\n");
                 break;
             default:
-                printf(COLOR_RED "Opção invalida. Tente novamente.\n" COLOR_RESET);
+                printf(COLOR_RED "Opcao invalida. Tente novamente.\n" COLOR_RESET);
                 break;
         }
         printf("\n");

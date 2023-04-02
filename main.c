@@ -49,10 +49,10 @@ int main() {
                 else printf(COLOR_RED "Nao ha disciplinas para remover!\n" COLOR_RESET);
                 break;
             case 6:
-                if(!removerAlunoDeMateria(&discHead, &alunoHead)) printf(COLOR_GREEN "Aluno removido da disciplina com sucesso!\n" COLOR_RESET);
+                removerAlunoDeMateria(&discHead, &alunoHead);
                 break;
             case 7:
-                if(!AlunoEmPeriodo(&alunoHead)) printf(COLOR_RED "Nao ha alunos para mostrar!\n" COLOR_RESET);
+                AlunoEmPeriodo(&alunoHead);
                 break;
             case 8:
                 if(!MateriaEmPeriodo(&discHead)) printf(COLOR_RED "Nao ha disciplinas para mostrar!\n" COLOR_RESET);

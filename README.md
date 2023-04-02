@@ -14,13 +14,13 @@ configure (You must has a LEAfiles/ and LEDfiles/ directories).
 
     $ bash config.sh          # FOR LINUX
 
-    $ powershell config.ps1   # FOR WINDOWS
+    > powershell config.ps1   # FOR WINDOWS
 
 recompile:
 
     $ bash rec.sh             # FOR LINUX
 
-    $ powershell rec.ps1      # FOR WINDOWS
+    > powershell rec.ps1      # FOR WINDOWS
     
 Finally:
 
